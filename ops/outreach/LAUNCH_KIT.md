@@ -1,266 +1,130 @@
-# OERC-S v0.1 Launch Kit
-> Copier-coller chaque section dans le canal approprié
+# OERC-S v0.1 LAUNCH KIT
+
+## SEND CHECKLIST (in order)
+
+1. **GitHub** - DONE: https://github.com/oerc-s/oerc-s
+2. **PDF** - DONE: spec/OERC-S_v0.1.pdf (767KB)
+3. **Zenodo** - Upload: ops/publication/zenodo_deposit/
+4. **IETF I-D** - Submit: ops/publication/ietf_internet_draft/
+5. **Tier-A Emails** - ESA SOLARIS, NASA SBSP, Caltech SSPP, JAXA
+6. **Optional** - X/Twitter, HackerNews
 
 ---
 
-## 1. TWITTER/X
+## SINGLE CTA
 
-### Post Principal
+> "Emit ONE real Collapse hash from a test."
+
+---
+
+## 3. ZENODO
+
+URL: https://zenodo.org/deposit/new
+
+Upload `ops/publication/zenodo_deposit/`:
+- metadata.json (prefilled)
+- Attach spec/OERC-S_v0.1.pdf
+
+Metadata:
+- Title: OERC-S: Open Energy Rail Collapse Specification v0.1
+- Type: Specification
+- License: CC-BY-4.0
+
+---
+
+## 4. IETF I-D
+
+URL: https://datatracker.ietf.org/submit/
+
+Upload: `ops/publication/ietf_internet_draft/draft-oerc-s-energy-finality-00.txt`
+
+---
+
+## 5. TIER-A EMAILS
+
+### ESA SOLARIS
+Contact: https://www.esa.int/Enabling_Support/Space_Engineering_Technology/SOLARIS
+
 ```
-OERC-S v0.1 is live.
+Subject: OERC-S - Settlement Protocol for Space Solar
 
-Settlement protocol for space-based energy.
-- Intent → Frame → Collapse
-- One hash = one settlement
-- Post-quantum ready
-- Vendor neutral
+We're asking SOLARIS to emit ONE real Collapse hash from a test environment.
 
-Spec: github.com/oerc-s/oerc-s
+OERC-S is an open settlement protocol for space-based energy:
+- Intent → Frame → Collapse flow
+- Single hash = settlement proof
+- Vendor-neutral, post-quantum ready
 
-We're asking space agencies to publish ONE Collapse hash from test.
+Spec: https://github.com/oerc-s/oerc-s
 
-That's it. One hash proves interop.
+One hash proves interoperability. No meeting needed.
 ```
 
-### Thread (optionnel)
+### NASA SBSP
+Contact: https://www.nasa.gov/directorates/stmd/sbsp/
+
 ```
-1/ Why does space energy need a settlement protocol?
+Subject: OERC-S - Open Settlement for SBSP
 
-Because when orbital solar beams power to ground stations, someone needs to prove it happened.
+Request: Emit ONE real Collapse hash from SBSP test infrastructure.
 
-OERC-S creates a single hash that proves: energy requested, delivered, settled.
+OERC-S produces a cryptographic hash binding energy Intent to delivery Frame.
+This hash is the settlement primitive.
 
-2/ The flow:
+Spec: https://github.com/oerc-s/oerc-s
+```
 
-INTENT: "I need 50 MWh at 14:00 UTC at coords X"
-FRAME: "Satellite orbit, beam params, ground state"
-COLLAPSE: Hash binding both = settlement proof
+### Caltech SSPP
+Contact: https://www.spacesolarpower.caltech.edu/
 
-3/ Why now?
+```
+Subject: OERC-S Settlement Protocol
 
-ESA SOLARIS, NASA SBSP, Caltech SSPP are all building space solar.
+Following MAPLE, we ask SSPP to emit ONE Collapse hash from test data.
 
-The settlement layer needs to exist BEFORE the power flows.
+OERC-S: Intent → Frame → Collapse
+One hash = one settlement proof.
 
-4/ What we're asking:
+Spec: https://github.com/oerc-s/oerc-s
+```
 
-Any org with test infrastructure: publish ONE Collapse hash.
+### JAXA SSPS
+Contact: https://www.kenkai.jaxa.jp/eng/research/ssps/
 
-No meeting. No contract. Just one hash that proves you can emit conformant settlements.
+```
+Subject: OERC-S for SSPS
+
+Request: Emit ONE Collapse hash from SSPS test environment.
+
+OERC-S is vendor-neutral settlement for space solar.
+
+Spec: https://github.com/oerc-s/oerc-s
+```
+
+---
+
+## 6. OPTIONAL (X/HN)
+
+### Twitter/X
+```
+OERC-S v0.1 live.
+
+Settlement protocol for space energy.
+Intent → Frame → Collapse.
+One hash = one settlement.
 
 github.com/oerc-s/oerc-s
+
+Asking space agencies to emit ONE Collapse hash.
 ```
+
+### HackerNews
+Title: `Show HN: OERC-S – Settlement protocol for space-based solar`
+URL: `https://github.com/oerc-s/oerc-s`
 
 ---
 
-## 2. LINKEDIN
+## ATTACHMENTS FOR EMAILS
 
-### Post
-```
-🔋 OERC-S v0.1 Released
-
-I'm sharing an open settlement protocol for space-based energy systems.
-
-The problem: When orbital solar power becomes real, how do you prove energy was delivered? Current grid settlement wasn't designed for orbital-to-ground transactions.
-
-The solution: OERC-S defines a three-stage flow:
-• Intent (energy request)
-• Frame (delivery context)
-• Collapse (cryptographic proof)
-
-One hash = one settlement. Tamper-evident. Vendor-neutral. Post-quantum ready.
-
-The spec is open and available: https://github.com/oerc-s/oerc-s
-
-We're asking organizations with space solar test infrastructure to publish ONE Collapse hash. No meetings needed—just one hash proves interoperability.
-
-#SpaceSolar #EnergySettlement #OpenProtocol #SBSP #Solaris
-```
-
----
-
-## 3. HACKER NEWS
-
-### Title
-```
-Show HN: OERC-S – Open settlement protocol for space-based solar energy
-```
-
-### URL
-```
-https://github.com/oerc-s/oerc-s
-```
-
-### Comment (post immédiatement après)
-```
-Hi HN,
-
-OERC-S is a settlement protocol for space-based energy. The core idea: a cryptographic hash that proves energy was requested, delivered, and settled.
-
-Why this matters: ESA (SOLARIS), NASA (SBSP), Caltech, and others are building space solar. The settlement infrastructure needs to exist before the hardware arrives.
-
-The protocol:
-- Intent: declare energy requirements (quantity, time, location)
-- Frame: capture delivery context (orbital params, beam characteristics)
-- Collapse: bind Intent+Frame into a single hash
-
-That hash is the settlement primitive. Any system that emits conformant Collapse hashes can participate in multi-party energy markets.
-
-Technical choices:
-- BLAKE3 for hashing
-- ML-DSA-65 / ML-KEM-768 for post-quantum crypto
-- CBOR for deterministic encoding
-- JSON Schema for validation
-
-We're asking any org with test infrastructure to publish ONE Collapse hash. That's it—one hash proves interop.
-
-Happy to answer questions about the design decisions.
-```
-
----
-
-## 4. EMAILS TIER 1 (Personnalisés)
-
-### 4.1 ESA SOLARIS
-**To:** Contact form at https://www.esa.int/Enabling_Support/Space_Engineering_Technology/SOLARIS
-**Subject:** OERC-S Settlement Protocol - Request for Conformance Test
-
-```
-Dear SOLARIS Team,
-
-I'm reaching out regarding OERC-S, an open settlement protocol designed for space-based solar power systems.
-
-As SOLARIS advances toward demonstrating space-based solar power for Europe, settlement infrastructure will be needed to prove energy delivery between orbital assets and ground stations.
-
-OERC-S defines a three-stage settlement flow (Intent → Frame → Collapse) that produces a single cryptographic hash proving energy was requested, delivered, and settled. The protocol is:
-- Vendor-neutral (no proprietary dependencies)
-- Post-quantum ready (ML-DSA-65, ML-KEM-768)
-- Designed for orbital-to-ground latency constraints
-
-We're asking the SOLARIS program to publish ONE Collapse hash from any test environment. No integration required—just one hash demonstrates conformance.
-
-Spec: https://github.com/oerc-s/oerc-s
-
-I'd be happy to discuss how OERC-S could support SOLARIS settlement requirements.
-
-Best regards
-```
-
-### 4.2 NASA SBSP
-**To:** Contact via https://www.nasa.gov/directorates/stmd/sbsp/
-**Subject:** OERC-S - Open Settlement Protocol for SBSP
-
-```
-Dear SBSP Program Team,
-
-I'm writing to introduce OERC-S, an open settlement protocol for space-based solar power.
-
-As NASA advances SBSP research, a standardized settlement layer will be essential for proving energy delivery from orbital systems to ground receivers.
-
-OERC-S produces a single cryptographic hash (Collapse) that binds:
-- Intent: energy request parameters
-- Frame: delivery context (orbital position, beam characteristics)
-
-This hash serves as tamper-evident proof of settlement, enabling multi-party energy markets without bilateral integration.
-
-Request: We're asking SBSP to publish ONE Collapse hash from test infrastructure. One hash proves interoperability.
-
-Spec: https://github.com/oerc-s/oerc-s
-
-Happy to discuss alignment with SBSP settlement requirements.
-
-Best regards
-```
-
-### 4.3 Caltech SSPP
-**To:** Contact via https://www.spacesolarpower.caltech.edu/
-**Subject:** OERC-S Settlement Protocol for Space Solar
-
-```
-Dear Space Solar Power Project Team,
-
-Following Caltech's successful MAPLE demonstration, I wanted to share OERC-S—an open settlement protocol designed for space-based solar power systems.
-
-OERC-S addresses the settlement layer: how do you prove energy was delivered from orbit to ground? The protocol produces a cryptographic hash binding energy requests to delivery context.
-
-Key properties:
-- Deterministic (same inputs = same Collapse, anywhere)
-- Post-quantum cryptography (ML-DSA-65)
-- Lightweight (designed for orbital latency)
-
-Request: Publish ONE Collapse hash from SSPP test data. One hash proves the protocol works with real space solar infrastructure.
-
-Spec: https://github.com/oerc-s/oerc-s
-
-Would welcome the opportunity to discuss.
-
-Best regards
-```
-
-### 4.4 JAXA
-**To:** Contact via https://www.kenkai.jaxa.jp/eng/research/ssps/ssps-index.html
-**Subject:** OERC-S - Settlement Protocol for SSPS
-
-```
-Dear SSPS Research Team,
-
-I'm reaching out regarding OERC-S, an open settlement protocol for space solar power systems.
-
-As JAXA continues SSPS research, standardized settlement infrastructure will be needed for orbital-to-ground energy transactions.
-
-OERC-S defines:
-- Intent: energy request declaration
-- Frame: delivery context capture
-- Collapse: cryptographic binding (settlement proof)
-
-The protocol is vendor-neutral and designed for international interoperability.
-
-Request: We ask JAXA to publish ONE Collapse hash from any SSPS test environment.
-
-Spec: https://github.com/oerc-s/oerc-s
-
-Best regards
-```
-
----
-
-## 5. ZENODO UPLOAD
-
-1. Go to: https://zenodo.org/deposit/new
-2. Upload: `ops/publication/zenodo_bundle/OERC-S_v0.1_zenodo.zip`
-3. Fill metadata:
-   - **Title:** OERC-S: Open Energy Rail Collapse Specification v0.1
-   - **Authors:** [Your name]
-   - **Description:** Settlement protocol for space-based energy systems. Defines Intent-Frame-Collapse flow producing cryptographic settlement proofs.
-   - **Keywords:** space solar power, settlement protocol, energy, cryptography, SBSP
-   - **License:** CC-BY-4.0
-   - **Access:** Open Access
-
----
-
-## 6. CHECKLIST D'EXÉCUTION
-
-```
-[ ] Twitter/X - Post principal
-[ ] Twitter/X - Thread (optionnel)
-[ ] LinkedIn - Post
-[ ] HackerNews - Submit + comment
-[ ] Zenodo - Upload bundle
-[ ] Email ESA SOLARIS
-[ ] Email NASA SBSP
-[ ] Email Caltech SSPP
-[ ] Email JAXA SSPS
-[ ] Email Northrop Grumman (find contact)
-[ ] Email Airbus Space (find contact)
-```
-
----
-
-## 7. SUIVI
-
-Après publication, track les réponses dans ce fichier:
-
-| Date | Canal | Réponse | Action |
-|------|-------|---------|--------|
-| | | | |
-
+1. spec/OERC-S_v0.1.pdf
+2. ops/outreach/onepager.md

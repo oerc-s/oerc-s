@@ -1,0 +1,6 @@
+# OERC-S PDF Build Dependencies
+# ==============================
+# Install with: pip install -r requirements.txt
+
+# PDF generation library (fallback when pandoc/typst unavailable)
+reportlab>=4.0.0

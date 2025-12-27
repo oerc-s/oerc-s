@@ -1,0 +1,37 @@
+OERC-S Conformance Note
+========================
+
+What Conformance Means
+----------------------
+A conformant implementation produces identical Collapse hashes for
+identical inputs. This ensures any two systems—regardless of vendor,
+language, or platform—can verify each other's settlement records.
+
+Conformance is binary: your implementation either produces the correct
+hash for all test vectors, or it does not. There are no partial passes.
+
+Conformance Vectors
+-------------------
+Test vectors are published at:
+
+  https://github.com/oerc-s/conformance-vectors
+
+Each vector contains:
+  - Intent JSON
+  - Frame JSON
+  - Expected Collapse hash (SHA-256)
+
+Running Conformance Check
+-------------------------
+1. Clone the conformance-vectors repository
+2. Feed each Intent + Frame pair to your implementation
+3. Compare output hash to expected Collapse
+4. All vectors must pass
+
+Command example (using reference implementation):
+
+  oerc-s conformance-check --vectors ./conformance-vectors/
+
+Report results to: conformance@oerc-s.org
+
+One hash. One test. That's all we ask.

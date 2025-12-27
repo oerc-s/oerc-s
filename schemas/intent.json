@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:oerc-s:schema:intent:v0.1",
+  "$source": "https://oerc-s.github.io/oerc-s/schemas/intent.json",
+  "title": "OERC-S INTENT Object",
+  "description": "An INTENT declares a desire to transfer energy between two node pubkeys within a timebox, specifying maximum energy and acceptable modalities.",
+  "type": "object",
+  "properties": {
+    "intent_id": {
+      "type": "string",
+      "description": "Unique identifier for the intent, blake3 hash (64 hex characters)",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "tx_node_pubkey": {
+      "type": "string",
+      "description": "Transmitting node public key (hex encoded)",
+      "pattern": "^[0-9a-f]+$"
+    },
+    "rx_node_pubkey": {
+      "type": "string",
+      "description": "Receiving node public key (hex encoded)",
+      "pattern": "^[0-9a-f]+$"
+    },
+    "timebox": {
+      "type": "object",
+      "description": "Time window for the energy transfer",
+      "properties": {
+        "t_start": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start time in ISO8601 format"
+        },
+        "t_end": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End time in ISO8601 format"
+        }
+      },
+      "required": ["t_start", "t_end"],
+      "additionalProperties": false
+    },
+    "max_energy_j": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615,
+      "description": "Maximum energy in joules (uint64)"
+    },
+    "modality_set": {
+      "type": "array",
+      "description": "Acceptable energy transfer modalities",
+      "items": {
+        "type": "string",
+        "enum": ["laser", "microwave", "storage", "relay"]
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "location_tag": {
+      "type": "object",
+      "description": "Spatial context for the energy transfer",
+      "properties": {
+        "orbit_regime": {
+          "type": "string",
+          "description": "Orbital regime identifier (e.g., LEO, MEO, GEO, cislunar)"
+        },
+        "ephemeris_hash": {
+          "type": "string",
+          "description": "Hash of ephemeris data for position verification",
+          "pattern": "^[0-9a-f]+$"
+        },
+        "footprint_id": {
+          "type": "string",
+          "description": "Identifier for the ground/space footprint"
+        }
+      },
+      "required": ["orbit_regime", "ephemeris_hash", "footprint_id"],
+      "additionalProperties": false
+    },
+    "crypto_suite_id": {
+      "type": "string",
+      "description": "Cryptographic suite used for signatures",
+      "enum": [
+        "ed25519-blake3",
+        "secp256k1-sha256",
+        "dilithium3-sha3",
+        "sphincs-sha256"
+      ]
+    },
+    "sigset": {
+      "type": "array",
+      "description": "Set of signatures authorizing this intent",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pubkey": {
+            "type": "string",
+            "description": "Public key of signer (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "sig": {
+            "type": "string",
+            "description": "Signature bytes (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "suite_id": {
+            "type": "string",
+            "description": "Cryptographic suite used for this signature",
+            "enum": [
+              "ed25519-blake3",
+              "secp256k1-sha256",
+              "dilithium3-sha3",
+              "sphincs-sha256"
+            ]
+          }
+        },
+        "required": ["pubkey", "sig", "suite_id"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "intent_id",
+    "tx_node_pubkey",
+    "rx_node_pubkey",
+    "timebox",
+    "max_energy_j",
+    "modality_set",
+    "location_tag",
+    "crypto_suite_id",
+    "sigset"
+  ],
+  "additionalProperties": false
+}

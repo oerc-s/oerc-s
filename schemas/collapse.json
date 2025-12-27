@@ -1,0 +1,185 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:oerc-s:schema:collapse:v0.1",
+  "$source": "https://oerc-s.github.io/oerc-s/schemas/collapse.json",
+  "title": "OERC-S COLLAPSE Object",
+  "description": "A COLLAPSE represents the finalized settlement of an energy transfer intent, recording the net energy transferred and associated fees.",
+  "type": "object",
+  "properties": {
+    "collapse_id": {
+      "type": "string",
+      "description": "Unique identifier for the collapse record (hex encoded)",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "intent_id": {
+      "type": "string",
+      "description": "Reference to the settled INTENT (hex encoded)",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "window_id": {
+      "type": "string",
+      "description": "Identifier for the settlement window"
+    },
+    "net_energy_j": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 18446744073709551615,
+      "description": "Net energy transferred in joules (uint64)"
+    },
+    "net_energy_confidence": {
+      "type": "object",
+      "description": "Confidence interval for net energy measurement (optional)",
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615,
+          "description": "Minimum estimated net energy in joules"
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 18446744073709551615,
+          "description": "Maximum estimated net energy in joules"
+        }
+      },
+      "required": ["min", "max"],
+      "additionalProperties": false
+    },
+    "fees": {
+      "type": "object",
+      "description": "Fee structure for this settlement (either basis_points or absolute_j)",
+      "oneOf": [
+        {
+          "properties": {
+            "basis_points": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10000,
+              "description": "Fee as basis points (1/100th of a percent)"
+            }
+          },
+          "required": ["basis_points"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "absolute_j": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 18446744073709551615,
+              "description": "Absolute fee in joules"
+            }
+          },
+          "required": ["absolute_j"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "finality_proof": {
+      "type": "object",
+      "description": "Proof of settlement finality",
+      "properties": {
+        "merkle_root": {
+          "type": "string",
+          "description": "Merkle root of the settlement batch (hex encoded)",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "signer_set": {
+          "type": "array",
+          "description": "List of signers who attested to finality",
+          "items": {
+            "type": "string",
+            "description": "Signer public key (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "window_params": {
+          "type": "object",
+          "description": "Parameters defining the settlement window",
+          "properties": {
+            "window_start": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Window start time in ISO8601 format"
+            },
+            "window_end": {
+              "type": "string",
+              "format": "date-time",
+              "description": "Window end time in ISO8601 format"
+            },
+            "block_height": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Optional: associated blockchain block height"
+            },
+            "epoch": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Optional: epoch number for the settlement"
+            }
+          },
+          "required": ["window_start", "window_end"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["merkle_root", "signer_set", "window_params"],
+      "additionalProperties": false
+    },
+    "crypto_suite_id": {
+      "type": "string",
+      "description": "Cryptographic suite used for signatures",
+      "enum": [
+        "ed25519-blake3",
+        "secp256k1-sha256",
+        "dilithium3-sha3",
+        "sphincs-sha256"
+      ]
+    },
+    "sigset": {
+      "type": "array",
+      "description": "Set of signatures attesting to the collapse",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pubkey": {
+            "type": "string",
+            "description": "Public key of signer (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "sig": {
+            "type": "string",
+            "description": "Signature bytes (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "suite_id": {
+            "type": "string",
+            "description": "Cryptographic suite used for this signature",
+            "enum": [
+              "ed25519-blake3",
+              "secp256k1-sha256",
+              "dilithium3-sha3",
+              "sphincs-sha256"
+            ]
+          }
+        },
+        "required": ["pubkey", "sig", "suite_id"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "collapse_id",
+    "intent_id",
+    "window_id",
+    "net_energy_j",
+    "fees",
+    "finality_proof",
+    "crypto_suite_id",
+    "sigset"
+  ],
+  "additionalProperties": false
+}

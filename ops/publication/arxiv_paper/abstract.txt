@@ -1,0 +1,10 @@
+OERC-S: Post-Quantum Energy Finality for Space-Based Power Systems
+
+We present OERC-S (Open Energy Rail Collapse Specification), a protocol for achieving deterministic transaction finality in energy markets. As space-based solar power (SBSP) systems become commercially viable and quantum computing threatens classical cryptographic infrastructure, energy markets require new protocols that provide sub-second finality with post-quantum security guarantees. OERC-S introduces a four-phase state machine--SUPERPOSITION, FINALITY, CLEARING, SETTLEMENT--with cryptographic binding using ML-DSA (Dilithium) signatures. The protocol enables machine-native energy trading where only "collapsed" transactions create payable obligations, eliminating settlement ambiguity. We describe the protocol design, analyze its security properties under quantum adversary models, and discuss applications to terrestrial grid balancing and orbital power transmission. OERC-S provides a foundation for the next generation of automated, high-frequency energy markets.
+
+---
+
+Primary Category: cs.CR (Cryptography and Security)
+Secondary Categories: cs.DC (Distributed Computing), eess.SY (Systems and Control)
+
+Keywords: post-quantum cryptography, energy markets, space-based solar power, transaction finality, ML-DSA, Dilithium, settlement protocols

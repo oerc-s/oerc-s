@@ -1,0 +1,16 @@
+{
+  "version": "0.1.0",
+  "vectors": [
+    "valid_intent.json",
+    "valid_frame.json",
+    "valid_collapse.json",
+    "invalid_sig_intent.json",
+    "invalid_sig_frame.json",
+    "wrong_window_collapse.json",
+    "segment_mismatch.json",
+    "replay_frame.json",
+    "out_of_timebox.json",
+    "wrong_modality.json"
+  ],
+  "generated": "2025-01-01T00:00:00Z"
+}

@@ -1,0 +1,1119 @@
+
+
+
+
+
+Network Working Group                                    OERC-S Working Group
+Internet-Draft
+Intended status: Informational                           December 27, 2025
+Expires: June 30, 2026
+
+
+         Open Energy Rail Collapse Specification (OERC-S)
+                   for Energy Transaction Finality
+                  draft-oerc-s-energy-finality-00
+
+Abstract
+
+   This document specifies the Open Energy Rail Collapse Specification
+   (OERC-S), a protocol for achieving deterministic finality in energy
+   transactions across terrestrial and space-based power systems.
+   OERC-S introduces a four-phase state machine (SUPERPOSITION,
+   FINALITY, CLEARING, SETTLEMENT) with cryptographic binding using
+   post-quantum signature algorithms. The protocol enables machine-
+   native energy trading with sub-second finality windows and provides
+   a canonical encoding suitable for high-frequency automated markets.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF). Note that other groups may also distribute
+   working documents as Internet-Drafts. The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six
+   months and may be updated, replaced, or obsoleted by other documents
+   at any time. It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on June 30, 2026.
+
+Copyright Notice
+
+   Copyright (c) 2025 IETF Trust and the persons identified as the
+   document authors. All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (https://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document. Please review these documents
+   carefully, as they describe your rights and restrictions with
+   respect to this document.
+
+
+
+
+
+
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 1]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+Table of Contents
+
+   1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.1.  Motivation  . . . . . . . . . . . . . . . . . . . . . . .   3
+     1.2.  Design Goals  . . . . . . . . . . . . . . . . . . . . . .   3
+     1.3.  Scope . . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   2.  Terminology . . . . . . . . . . . . . . . . . . . . . . . . .   4
+   3.  Protocol Overview . . . . . . . . . . . . . . . . . . . . . .   5
+     3.1.  State Machine . . . . . . . . . . . . . . . . . . . . . .   5
+     3.2.  Phase Transitions . . . . . . . . . . . . . . . . . . . .   6
+     3.3.  Finality Guarantees . . . . . . . . . . . . . . . . . . .   7
+   4.  Object Definitions  . . . . . . . . . . . . . . . . . . . . .   8
+     4.1.  Intent Object . . . . . . . . . . . . . . . . . . . . . .   8
+     4.2.  Frame Object  . . . . . . . . . . . . . . . . . . . . . .   9
+     4.3.  Collapse Object . . . . . . . . . . . . . . . . . . . . .  10
+     4.4.  Rail Object . . . . . . . . . . . . . . . . . . . . . . .  11
+   5.  Canonical Encoding  . . . . . . . . . . . . . . . . . . . . .  12
+     5.1.  JSON Canonical Form . . . . . . . . . . . . . . . . . . .  12
+     5.2.  Binary Encoding . . . . . . . . . . . . . . . . . . . . .  13
+     5.3.  Hash Computation  . . . . . . . . . . . . . . . . . . . .  13
+   6.  Cryptographic Operations  . . . . . . . . . . . . . . . . . .  14
+     6.1.  Post-Quantum Algorithms . . . . . . . . . . . . . . . . .  14
+     6.2.  Signature Generation  . . . . . . . . . . . . . . . . . .  14
+     6.3.  Signature Verification  . . . . . . . . . . . . . . . . .  15
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  15
+     7.1.  Threat Model  . . . . . . . . . . . . . . . . . . . . . .  15
+     7.2.  Quantum Resistance . . . . . . . . . . . . . . . . . . .  16
+     7.3.  Replay Protection . . . . . . . . . . . . . . . . . . . .  16
+     7.4.  Privacy Considerations  . . . . . . . . . . . . . . . . .  17
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  17
+   9.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  18
+     9.1.  Normative References  . . . . . . . . . . . . . . . . . .  18
+     9.2.  Informative References  . . . . . . . . . . . . . . . . .  18
+   Appendix A.  Example Objects  . . . . . . . . . . . . . . . . . .  19
+   Appendix B.  State Transition Diagrams  . . . . . . . . . . . . .  20
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  20
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 2]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+1.  Introduction
+
+1.1.  Motivation
+
+   Modern energy systems increasingly require automated, high-frequency
+   trading capabilities. Traditional energy markets operate on hourly
+   or daily settlement cycles, which are inadequate for:
+
+   o  Real-time grid balancing with variable renewable generation
+   o  Space-based solar power (SBSP) systems with orbital dynamics
+   o  Peer-to-peer energy trading in microgrids
+   o  Cross-border energy transactions requiring instant settlement
+
+   The emergence of quantum computing poses additional challenges to
+   existing cryptographic infrastructure. Energy transaction systems
+   must prepare for quantum-capable adversaries while maintaining
+   backward compatibility with classical systems.
+
+   OERC-S addresses these challenges by providing a machine-native
+   protocol for energy transaction finality that is:
+
+   o  Deterministic: Clear state transitions with no ambiguity
+   o  Post-quantum ready: ML-DSA (Dilithium) signatures standard
+   o  Low-latency: Sub-second finality for real-time markets
+   o  Auditable: Complete transaction history with cryptographic proofs
+
+1.2.  Design Goals
+
+   The protocol is designed with the following goals:
+
+   1.  Finality: Once a transaction reaches COLLAPSE state, it is
+       irreversible and payable. No probabilistic finality.
+
+   2.  Atomicity: Energy delivery and payment are cryptographically
+       bound. Partial completion is not possible.
+
+   3.  Interoperability: JSON-based encoding allows integration with
+       existing systems while binary encoding enables high-performance
+       implementations.
+
+   4.  Quantum Safety: Default use of NIST-approved post-quantum
+       signature algorithms with hybrid classical fallback.
+
+   5.  Minimal Trust: Parties need only trust the cryptographic
+       primitives, not intermediaries or network operators.
+
+
+
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 3]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+1.3.  Scope
+
+   This specification defines:
+
+   o  The OERC-S state machine and phase transitions
+   o  Object formats for Intent, Frame, Collapse, and Rail
+   o  Canonical encoding rules for deterministic serialization
+   o  Cryptographic binding requirements
+   o  Security considerations for implementation
+
+   This specification does not define:
+
+   o  Network transport protocols (implementation-specific)
+   o  Pricing mechanisms or market rules
+   o  Physical energy delivery verification
+   o  Regulatory compliance requirements
+
+2.  Terminology
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+   Intent
+      A declaration of willingness to buy or sell energy at specified
+      terms. Intents exist in SUPERPOSITION until matched.
+
+   Frame
+      A time-bounded container that aggregates matched Intents.
+      Represents the FINALITY phase where terms are locked.
+
+   Collapse
+      The irreversible state transition from FINALITY to CLEARING.
+      A Collapse object represents confirmed energy delivery and
+      creates a payable obligation.
+
+   Rail
+      The settlement channel configuration specifying payment methods,
+      currencies, and counterparty information.
+
+   Watt-second (Ws)
+      The canonical unit of energy in OERC-S. 1 Ws = 1 Joule.
+      All energy quantities MUST be expressed in Ws.
+
+   Post-Quantum Cryptography (PQC)
+      Cryptographic algorithms believed to be secure against attacks
+      by quantum computers. OERC-S uses NIST-approved PQC algorithms.
+
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 4]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+   ML-DSA
+      Module-Lattice-Based Digital Signature Algorithm, formerly known
+      as CRYSTALS-Dilithium. The primary signature algorithm in OERC-S.
+
+   Canonical Form
+      A deterministic serialization of an object that produces
+      identical byte sequences regardless of implementation.
+
+3.  Protocol Overview
+
+3.1.  State Machine
+
+   OERC-S defines a four-phase state machine for energy transactions:
+
+      +---------------+
+      | SUPERPOSITION |  Intents exist, no matching yet
+      +-------+-------+
+              |
+              | match()
+              v
+      +-------+-------+
+      |   FINALITY    |  Terms locked in Frame, awaiting delivery
+      +-------+-------+
+              |
+              | collapse()
+              v
+      +-------+-------+
+      |   CLEARING    |  Delivery confirmed, payment obligated
+      +-------+-------+
+              |
+              | settle()
+              v
+      +-------+-------+
+      |  SETTLEMENT   |  Payment complete, transaction closed
+      +---------------+
+
+   State Definitions:
+
+   SUPERPOSITION
+      Initial state where energy Intents exist but have not been
+      matched. Multiple potential outcomes are possible. Intents
+      may be cancelled or modified in this state.
+
+   FINALITY
+      Entered when Intents are matched into a Frame. Transaction
+      terms are cryptographically locked. Parties are committed
+      but no payment obligation exists yet.
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 5]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+   CLEARING
+      Entered upon Collapse. Energy delivery is confirmed by
+      cryptographic proof. A payable obligation is created.
+      This transition is IRREVERSIBLE.
+
+   SETTLEMENT
+      Final state. Payment has been executed through the specified
+      Rail. Transaction is complete and archived.
+
+3.2.  Phase Transitions
+
+   Transitions between phases are triggered by specific operations:
+
+   SUPERPOSITION -> FINALITY: match()
+
+      Requirements:
+      o  Two or more compatible Intents (buy/sell pair)
+      o  Overlapping time windows
+      o  Compatible energy quantities
+      o  Agreed pricing terms
+
+      Outputs:
+      o  Frame object containing matched Intents
+      o  Frame signature from matching engine
+
+   FINALITY -> CLEARING: collapse()
+
+      Requirements:
+      o  Valid Frame in FINALITY state
+      o  Energy delivery proof (meter attestation)
+      o  Timestamp within Frame validity window
+      o  Signatures from both counterparties
+
+      Outputs:
+      o  Collapse object with delivery proof
+      o  Payable obligation amount
+      o  Rail binding for settlement
+
+   CLEARING -> SETTLEMENT: settle()
+
+      Requirements:
+      o  Valid Collapse object
+      o  Payment execution through Rail
+      o  Confirmation from payment system
+
+      Outputs:
+      o  Settlement receipt
+      o  Transaction archive record
+
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 6]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+3.3.  Finality Guarantees
+
+   OERC-S provides deterministic finality with the following
+   properties:
+
+   Irreversibility
+      Once a Collapse object is created with valid signatures and
+      proofs, the transaction cannot be reversed. The payable
+      obligation exists regardless of subsequent events.
+
+   Non-repudiation
+      Post-quantum signatures bind parties to their commitments.
+      Neither party can deny participation after signing.
+
+   Atomicity
+      The Collapse operation is atomic. Either all conditions are
+      met and the Collapse succeeds, or no state change occurs.
+
+   Temporal Binding
+      All objects include timestamps and validity windows. Expired
+      Intents and Frames cannot participate in Collapse.
+
+   Finality Timing
+
+      The protocol supports configurable finality windows:
+
+      o  Standard: 60 seconds from Frame creation to Collapse
+      o  Fast: 5 seconds for high-frequency trading
+      o  Extended: 3600 seconds for scheduled delivery
+
+      Implementations MUST enforce the configured window. Collapse
+      attempts outside the window MUST be rejected.
+
+   Failure Modes
+
+      If Collapse fails, the Frame reverts to cancelled state:
+
+      o  Intents are released back to SUPERPOSITION
+      o  No payment obligation is created
+      o  Parties may retry with new Frame
+
+      Failure reasons include:
+      o  Missing or invalid delivery proof
+      o  Expired validity window
+      o  Invalid signatures
+      o  Network partition during critical phase
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 7]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+4.  Object Definitions
+
+4.1.  Intent Object
+
+   An Intent represents a party's willingness to buy or sell energy.
+
+   {
+     "id": "intent_01JGXYZ...",
+     "version": "0.1",
+     "type": "Intent",
+     "direction": "BUY" | "SELL",
+     "party": {
+       "id": "party_identifier",
+       "public_key": "base64_encoded_public_key",
+       "key_algorithm": "ML-DSA-65"
+     },
+     "energy": {
+       "quantity_ws": 3600000000,
+       "min_quantity_ws": 1800000000,
+       "source_type": "SBSP" | "SOLAR" | "WIND" | "GRID" | "ANY"
+     },
+     "pricing": {
+       "price_per_mwh": "45.50",
+       "currency": "USD",
+       "price_type": "FIXED" | "DYNAMIC"
+     },
+     "timing": {
+       "valid_from": "2025-12-27T00:00:00Z",
+       "valid_until": "2025-12-27T01:00:00Z",
+       "delivery_window_seconds": 3600
+     },
+     "location": {
+       "grid_node": "node_identifier",
+       "coordinates": {"lat": 37.7749, "lon": -122.4194}
+     },
+     "constraints": {
+       "counterparty_whitelist": [],
+       "counterparty_blacklist": [],
+       "max_counterparties": 10
+     },
+     "signature": "base64_encoded_signature",
+     "created_at": "2025-12-27T00:00:00Z"
+   }
+
+   Required Fields: id, version, type, direction, party, energy,
+   pricing, timing, signature, created_at
+
+   The signature MUST be computed over the canonical form of all
+   fields except the signature field itself.
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 8]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+4.2.  Frame Object
+
+   A Frame aggregates matched Intents and represents locked terms.
+
+   {
+     "id": "frame_01JGXYZ...",
+     "version": "0.1",
+     "type": "Frame",
+     "status": "ACTIVE" | "COLLAPSED" | "CANCELLED" | "EXPIRED",
+     "intents": [
+       {"intent_id": "intent_01...", "role": "BUYER"},
+       {"intent_id": "intent_02...", "role": "SELLER"}
+     ],
+     "terms": {
+       "quantity_ws": 3600000000,
+       "price_per_mwh": "45.50",
+       "currency": "USD",
+       "total_value": "45.50"
+     },
+     "timing": {
+       "created_at": "2025-12-27T00:00:00Z",
+       "valid_until": "2025-12-27T00:01:00Z",
+       "delivery_start": "2025-12-27T00:00:00Z",
+       "delivery_end": "2025-12-27T01:00:00Z"
+     },
+     "matching": {
+       "engine_id": "matching_engine_01",
+       "algorithm": "PRICE_TIME_PRIORITY",
+       "match_timestamp": "2025-12-27T00:00:00Z"
+     },
+     "signatures": {
+       "buyer": "base64_encoded_signature",
+       "seller": "base64_encoded_signature",
+       "engine": "base64_encoded_signature"
+     },
+     "collapse_hash": null
+   }
+
+   Required Fields: id, version, type, status, intents, terms,
+   timing, matching, signatures
+
+   Frame Validity Rules:
+   o  Both buyer and seller signatures MUST be present
+   o  Engine signature MUST be present
+   o  valid_until MUST be in the future at creation time
+   o  All referenced Intents MUST exist and be valid
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                  [Page 9]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+4.3.  Collapse Object
+
+   A Collapse represents confirmed energy delivery and payment
+   obligation.
+
+   {
+     "id": "collapse_01JGXYZ...",
+     "version": "0.1",
+     "type": "Collapse",
+     "frame_id": "frame_01JGXYZ...",
+     "frame_hash": "sha3_256_hash_of_frame",
+     "delivery": {
+       "quantity_ws": 3600000000,
+       "start_time": "2025-12-27T00:00:00Z",
+       "end_time": "2025-12-27T01:00:00Z",
+       "meter_readings": {
+         "start": 1000000,
+         "end": 2000000,
+         "meter_id": "meter_01"
+       }
+     },
+     "proof": {
+       "type": "METER_ATTESTATION",
+       "attestor_id": "grid_operator_01",
+       "attestation": "base64_encoded_attestation",
+       "attestor_signature": "base64_encoded_signature"
+     },
+     "obligation": {
+       "payer": "party_buyer_id",
+       "payee": "party_seller_id",
+       "amount": "45.50",
+       "currency": "USD",
+       "due_by": "2025-12-27T02:00:00Z"
+     },
+     "rail": {
+       "rail_id": "rail_01JGXYZ...",
+       "type": "BANK_TRANSFER" | "STABLECOIN" | "CBDC"
+     },
+     "signatures": {
+       "buyer": "base64_encoded_signature",
+       "seller": "base64_encoded_signature",
+       "attestor": "base64_encoded_signature"
+     },
+     "collapsed_at": "2025-12-27T01:00:05Z"
+   }
+
+   Required Fields: id, version, type, frame_id, frame_hash,
+   delivery, proof, obligation, rail, signatures, collapsed_at
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 10]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+   Collapse Validity Rules:
+   o  frame_hash MUST match SHA3-256 hash of referenced Frame
+   o  delivery.quantity_ws MUST be within Frame terms tolerance
+   o  proof MUST be cryptographically valid
+   o  All required signatures MUST be present and valid
+   o  collapsed_at MUST be within Frame validity window
+
+4.4.  Rail Object
+
+   A Rail defines the settlement channel for payment execution.
+
+   {
+     "id": "rail_01JGXYZ...",
+     "version": "0.1",
+     "type": "Rail",
+     "status": "ACTIVE" | "SUSPENDED" | "CLOSED",
+     "rail_type": "BANK_TRANSFER" | "STABLECOIN" | "CBDC" | "ESCROW",
+     "parties": {
+       "payer": {
+         "party_id": "party_buyer_id",
+         "account_reference": "encrypted_account_info"
+       },
+       "payee": {
+         "party_id": "party_seller_id",
+         "account_reference": "encrypted_account_info"
+       }
+     },
+     "currency": {
+       "code": "USD",
+       "settlement_asset": "USD" | "USDC" | "EURC"
+     },
+     "limits": {
+       "min_amount": "1.00",
+       "max_amount": "1000000.00",
+       "daily_limit": "10000000.00"
+     },
+     "timing": {
+       "created_at": "2025-12-27T00:00:00Z",
+       "valid_until": "2026-12-27T00:00:00Z",
+       "settlement_window_seconds": 3600
+     },
+     "signatures": {
+       "payer": "base64_encoded_signature",
+       "payee": "base64_encoded_signature"
+     }
+   }
+
+   Required Fields: id, version, type, status, rail_type, parties,
+   currency, timing, signatures
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 11]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+5.  Canonical Encoding
+
+5.1.  JSON Canonical Form
+
+   For deterministic hashing and signature verification, all OERC-S
+   objects MUST be serialized using the following canonical form:
+
+   1.  Object keys MUST be sorted lexicographically (Unicode code
+       point order)
+
+   2.  No whitespace between tokens (no spaces, newlines, or tabs)
+
+   3.  Unicode characters MUST be escaped using \uXXXX notation for
+       characters outside ASCII printable range
+
+   4.  Numbers MUST NOT have leading zeros (except for 0 itself)
+
+   5.  Numbers MUST NOT have trailing zeros after decimal point
+
+   6.  Strings MUST use double quotes
+
+   7.  No trailing commas
+
+   Example:
+
+   Non-canonical:
+   {
+     "quantity": 3600000000,
+     "price": "45.50",
+     "id": "intent_01"
+   }
+
+   Canonical:
+   {"id":"intent_01","price":"45.50","quantity":3600000000}
+
+   Implementation Note:
+
+   Implementations SHOULD use established JSON canonicalization
+   libraries such as:
+   o  RFC 8785 (JSON Canonicalization Scheme)
+   o  JCS (JSON Canonicalization Scheme) implementations
+
+   Implementations MUST validate that serialized output matches the
+   canonical form before signing or hashing.
+
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 12]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+5.2.  Binary Encoding
+
+   For high-performance implementations, OERC-S defines an optional
+   binary encoding using CBOR (RFC 8949):
+
+   1.  Objects are first converted to canonical JSON form
+   2.  JSON is then encoded as CBOR using deterministic encoding
+   3.  CBOR output uses the following rules:
+       - Map keys sorted by byte-wise lexicographic order
+       - Minimal integer encoding
+       - No indefinite-length items
+
+   Binary-encoded objects MUST produce identical hashes as their
+   JSON canonical form equivalents when decoded and re-encoded.
+
+   Content-Type for binary encoding: application/cbor
+
+5.3.  Hash Computation
+
+   OERC-S uses SHA3-256 for all hash computations:
+
+   1.  Serialize object to canonical JSON form (excluding signature
+       fields)
+   2.  Encode canonical JSON as UTF-8 bytes
+   3.  Compute SHA3-256 hash of byte sequence
+   4.  Encode hash as lowercase hexadecimal (64 characters)
+
+   Example:
+
+   Input (canonical):
+   {"id":"intent_01","price":"45.50","quantity":3600000000}
+
+   UTF-8 bytes:
+   7b 22 69 64 22 3a 22 69 6e 74 65 6e 74 5f 30 31
+   22 2c 22 70 72 69 63 65 22 3a 22 34 35 2e 35 30
+   22 2c 22 71 75 61 6e 74 69 74 79 22 3a 33 36 30
+   30 30 30 30 30 30 30 7d
+
+   SHA3-256 hash:
+   a7b3c4d5e6f7... (64 hex characters)
+
+   Hash fields in objects (e.g., frame_hash in Collapse) MUST
+   contain the lowercase hexadecimal representation.
+
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 13]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+6.  Cryptographic Operations
+
+6.1.  Post-Quantum Algorithms
+
+   OERC-S mandates support for the following NIST-approved post-
+   quantum signature algorithms:
+
+   Primary (REQUIRED):
+   o  ML-DSA-65 (FIPS 204) - Module-Lattice Digital Signature
+      - Security Level: NIST Level 3 (128-bit post-quantum)
+      - Public Key Size: 1952 bytes
+      - Signature Size: 3293 bytes
+
+   Secondary (RECOMMENDED):
+   o  ML-DSA-87 (FIPS 204) - Higher security level
+      - Security Level: NIST Level 5 (192-bit post-quantum)
+      - Public Key Size: 2592 bytes
+      - Signature Size: 4595 bytes
+
+   Hybrid Mode (OPTIONAL):
+   o  ML-DSA-65 + Ed25519 composite signature
+      - Provides security if either algorithm remains secure
+      - Larger signature size but defense in depth
+
+   Classical Fallback (DEPRECATED):
+   o  Ed25519 - For legacy system interoperability only
+      - MUST NOT be used for new deployments after 2027
+
+6.2.  Signature Generation
+
+   To generate a signature:
+
+   1.  Construct the object with all fields except signature
+   2.  Serialize to canonical JSON form
+   3.  Encode as UTF-8 bytes
+   4.  Sign bytes using party's private key
+   5.  Encode signature as base64
+   6.  Add signature field to object
+
+   The key_algorithm field MUST indicate the algorithm used:
+   o  "ML-DSA-65" for primary algorithm
+   o  "ML-DSA-87" for higher security
+   o  "ML-DSA-65+Ed25519" for hybrid mode
+   o  "Ed25519" for legacy (deprecated)
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 14]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+6.3.  Signature Verification
+
+   To verify a signature:
+
+   1.  Extract signature field from object
+   2.  Decode base64 signature to bytes
+   3.  Remove signature field from object
+   4.  Serialize remaining object to canonical JSON form
+   5.  Encode as UTF-8 bytes
+   6.  Verify signature against bytes using signer's public key
+
+   Verification MUST fail if:
+   o  Signature decoding fails
+   o  Public key is not found or invalid
+   o  Algorithm mismatch between key and signature
+   o  Cryptographic verification fails
+
+   Implementations MUST reject signatures using deprecated algorithms
+   for new transactions after the algorithm deprecation date.
+
+7.  Security Considerations
+
+7.1.  Threat Model
+
+   OERC-S is designed to resist the following threats:
+
+   Active Network Adversary
+      An attacker who can intercept, modify, and inject messages.
+      Mitigated by: Cryptographic signatures on all objects.
+
+   Quantum-Capable Adversary
+      An attacker with access to a cryptographically-relevant quantum
+      computer. Mitigated by: Post-quantum signature algorithms.
+
+   Malicious Counterparty
+      A party attempting to defraud through double-spending, denial,
+      or manipulation. Mitigated by: Atomic state transitions,
+      non-repudiation through signatures.
+
+   Compromised Matching Engine
+      A matching engine attempting to manipulate prices or ordering.
+      Mitigated by: All parties sign Frames; engine cannot forge.
+
+   Time-Based Attacks
+      Manipulation of timestamps to exploit validity windows.
+      Mitigated by: Strict timestamp validation, synchronized clocks.
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 15]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+7.2.  Quantum Resistance
+
+   The primary security consideration for OERC-S is resistance to
+   quantum computing attacks. Key points:
+
+   Algorithm Selection
+      ML-DSA (Dilithium) was selected by NIST after extensive
+      cryptanalysis. The algorithm is based on the hardness of
+      Module Learning With Errors (MLWE) problem.
+
+   Security Levels
+      ML-DSA-65 provides NIST Level 3 security, equivalent to
+      AES-192. This is considered sufficient for most applications.
+      ML-DSA-87 provides Level 5 (AES-256 equivalent) for
+      higher-value transactions.
+
+   Migration Timeline
+      Organizations SHOULD begin PQC migration immediately.
+      Classical algorithms (Ed25519) are deprecated and will be
+      removed in future versions.
+
+   Hybrid Approach
+      The optional hybrid mode (ML-DSA + Ed25519) provides
+      defense in depth during the transition period.
+
+7.3.  Replay Protection
+
+   OERC-S provides replay protection through:
+
+   Unique Identifiers
+      All objects contain unique IDs (ULID format recommended).
+      Implementations MUST reject duplicate IDs.
+
+   Timestamps
+      All objects contain creation timestamps. Implementations
+      SHOULD reject objects with timestamps significantly in
+      the past (recommended: > 5 minutes).
+
+   Validity Windows
+      Intents and Frames have explicit validity windows.
+      Operations outside windows MUST be rejected.
+
+   State Tracking
+      Implementations MUST track object states. Once an Intent
+      is matched or a Frame collapsed, the objects cannot be
+      reused.
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 16]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+7.4.  Privacy Considerations
+
+   OERC-S objects contain potentially sensitive information:
+
+   Party Identification
+      Public keys can be used to track party activity across
+      transactions. Implementations MAY use derived keys per
+      transaction for enhanced privacy.
+
+   Transaction Amounts
+      Energy quantities and prices are visible in objects.
+      For privacy-sensitive deployments, consider encrypted
+      envelopes with selective disclosure.
+
+   Location Data
+      Grid node and coordinate information may reveal physical
+      locations. Implementations SHOULD minimize location
+      precision to what is necessary for matching.
+
+   Account Information
+      Rail objects contain account references. These MUST be
+      encrypted and SHOULD use tokenized references rather
+      than actual account numbers.
+
+8.  IANA Considerations
+
+   This document requests the following IANA registrations:
+
+   Media Types:
+   o  application/oerc-s+json - OERC-S objects in JSON format
+   o  application/oerc-s+cbor - OERC-S objects in CBOR format
+
+   URI Scheme:
+   o  oerc-s: - For OERC-S object references
+
+   The registrations would include:
+   o  Type name: application
+   o  Subtype name: oerc-s+json
+   o  Required parameters: version
+   o  Optional parameters: object-type (Intent, Frame, Collapse, Rail)
+   o  Encoding considerations: UTF-8
+   o  Security considerations: See Section 7
+   o  Interoperability considerations: See Section 5
+
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 17]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+9.  References
+
+9.1.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174,
+              DOI 10.17487/RFC8174, May 2017,
+              <https://www.rfc-editor.org/info/rfc8174>.
+
+   [RFC8785]  Rundgren, A., Jordan, B., and S. Erdtman, "JSON
+              Canonicalization Scheme (JCS)", RFC 8785,
+              DOI 10.17487/RFC8785, June 2020,
+              <https://www.rfc-editor.org/info/rfc8785>.
+
+   [RFC8949]  Bormann, C. and P. Hoffman, "Concise Binary Object
+              Representation (CBOR)", STD 94, RFC 8949,
+              DOI 10.17487/RFC8949, December 2020,
+              <https://www.rfc-editor.org/info/rfc8949>.
+
+   [FIPS204]  National Institute of Standards and Technology, "Module-
+              Lattice-Based Digital Signature Standard", FIPS 204,
+              August 2024.
+
+9.2.  Informative References
+
+   [SBSP]     Mankins, J., "Space Solar Power: The First International
+              Assessment of Space Solar Power", International Academy
+              of Astronautics, 2011.
+
+   [NISTPQC]  National Institute of Standards and Technology, "Post-
+              Quantum Cryptography Standardization", 2024,
+              <https://csrc.nist.gov/projects/post-quantum-cryptography>.
+
+   [RFC9180]  Barnes, R., Bhargavan, K., Lipp, B., and C. Wood, "Hybrid
+              Public Key Encryption", RFC 9180, DOI 10.17487/RFC9180,
+              February 2022, <https://www.rfc-editor.org/info/rfc9180>.
+
+
+
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 18]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+Appendix A.  Example Objects
+
+A.1.  Complete Intent Example
+
+   {
+     "id": "intent_01JGX7K9M2N3P4Q5R6S7T8V9W0",
+     "version": "0.1",
+     "type": "Intent",
+     "direction": "SELL",
+     "party": {
+       "id": "sbsp_operator_alpha",
+       "public_key": "MIIBIjANBgkqh...",
+       "key_algorithm": "ML-DSA-65"
+     },
+     "energy": {
+       "quantity_ws": 3600000000000,
+       "min_quantity_ws": 1800000000000,
+       "source_type": "SBSP"
+     },
+     "pricing": {
+       "price_per_mwh": "42.00",
+       "currency": "USD",
+       "price_type": "FIXED"
+     },
+     "timing": {
+       "valid_from": "2025-12-27T12:00:00Z",
+       "valid_until": "2025-12-27T13:00:00Z",
+       "delivery_window_seconds": 3600
+     },
+     "location": {
+       "grid_node": "WECC_CAISO_SP15"
+     },
+     "signature": "MEUCIQDQ7sN...",
+     "created_at": "2025-12-27T11:55:00Z"
+   }
+
+A.2.  Minimal Collapse Example
+
+   {
+     "id": "collapse_01JGX8L0N3O4P5Q6R7S8T9U0V1",
+     "version": "0.1",
+     "type": "Collapse",
+     "frame_id": "frame_01JGX7M1O2P3Q4R5S6T7U8V9",
+     "frame_hash": "a7b3c4d5e6f78901234567890abcdef...",
+     "collapsed_at": "2025-12-27T13:00:05Z"
+   }
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 19]
+
+Internet-Draft                   OERC-S                    December 2025
+
+
+Appendix B.  State Transition Diagrams
+
+   ASCII representation of the OERC-S state machine:
+
+   +-------------+     match()      +----------+
+   |SUPERPOSITION| ---------------> | FINALITY |
+   +-------------+                  +----+-----+
+        ^                                |
+        |          cancel()              | collapse()
+        +--------------------------------+
+                                         |
+                                         v
+                                   +-----+----+     settle()    +----------+
+                                   | CLEARING | --------------> |SETTLEMENT|
+                                   +----------+                 +----------+
+
+   Error transitions:
+
+   - FINALITY -> CANCELLED: timeout or explicit cancel
+   - CLEARING -> ERROR: settlement failure (requires manual resolution)
+
+Authors' Addresses
+
+   OERC-S Working Group
+
+   Email: oerc-s@example.org
+   URI:   https://github.com/oerc-s/specification
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OERC-S Working Group     Expires June 30, 2026                 [Page 20]

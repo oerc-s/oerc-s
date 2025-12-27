@@ -1,0 +1,11 @@
+{
+  "title": "OERC-S v0.1: Open Energy Rail Collapse Specification",
+  "creators": [{"name": "OERC-S Working Group", "affiliation": ""}],
+  "description": "Machine-native, post-quantum-ready specification for energy finality. SUPERPOSITION → FINALITY → CLEARING → SETTLEMENT. Only COLLAPSE is payable.",
+  "keywords": ["energy", "finality", "post-quantum", "settlement", "space-based solar"],
+  "license": "CC-BY-4.0",
+  "version": "0.1.0",
+  "upload_type": "publication",
+  "publication_type": "workingpaper",
+  "access_right": "open"
+}

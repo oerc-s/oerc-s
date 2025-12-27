@@ -1,0 +1,230 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[margin=1in]{geometry}
+
+\title{OERC-S: Post-Quantum Energy Finality for Space-Based Power Systems}
+
+\author{
+  OERC-S Working Group\\
+  \texttt{oerc-s@example.org}
+}
+
+\date{December 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present OERC-S (Open Energy Rail Collapse Specification), a protocol for achieving deterministic transaction finality in energy markets. As space-based solar power (SBSP) systems become commercially viable and quantum computing threatens classical cryptographic infrastructure, energy markets require new protocols that provide sub-second finality with post-quantum security guarantees. OERC-S introduces a four-phase state machine---SUPERPOSITION, FINALITY, CLEARING, SETTLEMENT---with cryptographic binding using ML-DSA (Dilithium) signatures. The protocol enables machine-native energy trading where only ``collapsed'' transactions create payable obligations, eliminating settlement ambiguity. We describe the protocol design, analyze its security properties under quantum adversary models, and discuss applications to terrestrial grid balancing and orbital power transmission. OERC-S provides a foundation for the next generation of automated, high-frequency energy markets.
+\end{abstract}
+
+\section{Introduction}
+
+The global energy transition presents unprecedented challenges for market infrastructure. Variable renewable generation from solar and wind requires real-time balancing at scales incompatible with traditional hourly settlement cycles. Emerging space-based solar power (SBSP) systems add complexity through orbital dynamics, atmospheric transmission losses, and multi-jurisdictional delivery \cite{mankins2011sbsp}.
+
+Current energy market protocols suffer from three fundamental limitations:
+
+\begin{enumerate}
+    \item \textbf{Settlement latency}: Day-ahead and hour-ahead markets cannot respond to sub-minute generation variability.
+    \item \textbf{Probabilistic finality}: Many systems lack clear finality guarantees, creating counterparty risk and settlement disputes.
+    \item \textbf{Quantum vulnerability}: Classical digital signature schemes (RSA, ECDSA) are vulnerable to Shor's algorithm on quantum computers \cite{nistpqc2024}.
+\end{enumerate}
+
+We address these limitations with OERC-S, a protocol designed for machine-native energy trading. Our contributions include:
+
+\begin{itemize}
+    \item A four-phase state machine with deterministic, irreversible finality
+    \item Native integration of NIST-approved post-quantum signatures
+    \item Canonical encoding enabling sub-second transaction validation
+    \item Application to both terrestrial grids and SBSP systems
+\end{itemize}
+
+\section{Background}
+
+\subsection{Energy Market Evolution}
+
+Traditional energy markets evolved from bilateral contracts to organized exchanges with increasing automation \cite{kirschen2018power}. Modern Independent System Operators (ISOs) operate real-time markets with 5-minute dispatch intervals, but settlement remains on hourly or daily cycles.
+
+The growth of distributed energy resources (DERs) and peer-to-peer trading platforms creates demand for finer-grained settlement. Blockchain-based approaches have been proposed but suffer from probabilistic finality and limited throughput \cite{mengelkamp2018blockchain}.
+
+\subsection{Space-Based Solar Power}
+
+SBSP systems collect solar energy in orbit and transmit it to ground receivers via microwave or laser \cite{mankins2011sbsp}. Key characteristics affecting market design include:
+
+\begin{itemize}
+    \item \textbf{Orbital periods}: LEO satellites have 90-minute orbital periods with variable ground contact
+    \item \textbf{Transmission efficiency}: 80-90\% end-to-end efficiency for optimized systems
+    \item \textbf{Multi-point delivery}: Single satellite can serve multiple ground stations
+    \item \textbf{Predictable generation}: Unlike terrestrial solar, orbital systems have deterministic generation profiles
+\end{itemize}
+
+These characteristics require market protocols supporting rapid switching between delivery points and guaranteed finality within orbital windows.
+
+\subsection{Post-Quantum Cryptography}
+
+NIST completed its post-quantum cryptography standardization in 2024, selecting ML-DSA (Module-Lattice Digital Signature Algorithm, formerly CRYSTALS-Dilithium) as the primary signature standard \cite{fips204}. ML-DSA provides security against both classical and quantum adversaries based on the hardness of the Module Learning With Errors (MLWE) problem.
+
+For energy market applications, post-quantum signatures are essential because:
+\begin{itemize}
+    \item Energy infrastructure has multi-decade lifespans
+    \item Historical transaction records must remain non-repudiable
+    \item Harvest-now-decrypt-later attacks pose immediate risks
+\end{itemize}
+
+\section{Protocol Design}
+
+\subsection{State Machine}
+
+OERC-S defines four protocol phases:
+
+\begin{enumerate}
+    \item \textbf{SUPERPOSITION}: Energy intents exist but are not matched. Multiple potential transaction outcomes are possible. Intents may be modified or cancelled.
+
+    \item \textbf{FINALITY}: Intents are matched into a Frame with locked terms. Parties are committed but no payment obligation exists.
+
+    \item \textbf{CLEARING}: The Collapse operation confirms energy delivery and creates a payable obligation. This transition is irreversible.
+
+    \item \textbf{SETTLEMENT}: Payment is executed through the configured Rail. Transaction is complete.
+\end{enumerate}
+
+The key insight is that only the COLLAPSE transition creates financial obligation. Failed deliveries result in Frame cancellation, not partial payment.
+
+\subsection{Object Model}
+
+OERC-S defines four core objects:
+
+\textbf{Intent}: A declaration of willingness to buy or sell energy at specified terms. Includes party identity, energy quantity (in watt-seconds), pricing, timing constraints, and location.
+
+\textbf{Frame}: A container aggregating matched Intents with locked terms. Represents the transition from SUPERPOSITION to FINALITY.
+
+\textbf{Collapse}: The record of confirmed delivery. Contains delivery proof (meter attestation), obligation amount, and references to the Frame and Rail.
+
+\textbf{Rail}: Settlement channel configuration specifying payment method, counterparty accounts, and limits.
+
+\subsection{Cryptographic Binding}
+
+All objects are cryptographically signed using ML-DSA-65 (NIST Level 3 security). The signature process:
+
+\begin{algorithm}
+\caption{OERC-S Signature Generation}
+\begin{algorithmic}
+\STATE \textbf{Input:} Object $O$, Private key $sk$
+\STATE \textbf{Output:} Signed object $O'$
+\STATE $O_{canon} \leftarrow$ CanonicalJSON($O \setminus \{signature\}$)
+\STATE $bytes \leftarrow$ UTF8Encode($O_{canon}$)
+\STATE $sig \leftarrow$ ML-DSA-Sign($sk$, $bytes$)
+\STATE $O' \leftarrow O \cup \{signature: Base64(sig)\}$
+\RETURN $O'$
+\end{algorithmic}
+\end{algorithm}
+
+Canonical JSON encoding (RFC 8785) ensures deterministic serialization across implementations.
+
+\subsection{Collapse Protocol}
+
+The Collapse operation is the critical state transition:
+
+\begin{algorithm}
+\caption{Collapse Protocol}
+\begin{algorithmic}
+\REQUIRE Valid Frame $F$ in FINALITY state
+\REQUIRE Delivery proof $P$ from trusted attestor
+\REQUIRE Current time within Frame validity window
+\STATE Verify Frame signatures (buyer, seller, engine)
+\STATE Verify delivery proof signature
+\STATE Verify delivered quantity within tolerance
+\STATE $hash \leftarrow$ SHA3-256(CanonicalJSON($F$))
+\STATE Construct Collapse object $C$
+\STATE Sign $C$ with buyer, seller, attestor keys
+\STATE Transition Frame status to COLLAPSED
+\RETURN Collapse object $C$
+\end{algorithmic}
+\end{algorithm}
+
+If any verification fails, the Frame remains in FINALITY state and may be cancelled or retried.
+
+\section{Security Analysis}
+
+\subsection{Threat Model}
+
+We consider adversaries with the following capabilities:
+
+\begin{itemize}
+    \item \textbf{Network}: Can intercept, modify, delay, or inject messages
+    \item \textbf{Computational}: Has access to quantum computers capable of running Shor's algorithm
+    \item \textbf{Collusion}: May control one party to a transaction
+\end{itemize}
+
+\subsection{Security Properties}
+
+\textbf{Non-repudiation}: ML-DSA signatures bind parties to their commitments. Neither party can deny signing an Intent, Frame, or Collapse after the fact. This property holds against quantum adversaries.
+
+\textbf{Integrity}: SHA3-256 hashes link objects cryptographically. The Collapse object contains the Frame hash, preventing substitution attacks.
+
+\textbf{Finality}: Once a valid Collapse object exists with all required signatures, the payment obligation is irrevocable. No subsequent protocol message can undo the Collapse.
+
+\textbf{Atomicity}: The Collapse operation is all-or-nothing. Partial completion states are not possible---either all conditions are met and Collapse succeeds, or the Frame remains unchanged.
+
+\subsection{Quantum Resistance}
+
+ML-DSA-65 provides NIST Level 3 security (equivalent to AES-192). The underlying MLWE problem is believed hard for both classical and quantum computers. Key advantages:
+
+\begin{itemize}
+    \item No known quantum speedup beyond Grover's algorithm
+    \item Grover provides only quadratic speedup, addressed by larger parameters
+    \item Extensive cryptanalysis during NIST standardization
+\end{itemize}
+
+For high-value transactions, ML-DSA-87 (Level 5) may be used with larger signatures.
+
+\subsection{Replay Protection}
+
+OERC-S prevents replay attacks through:
+
+\begin{itemize}
+    \item Unique object identifiers (ULID format)
+    \item Timestamps with validity windows
+    \item State tracking preventing object reuse
+\end{itemize}
+
+\section{Applications}
+
+\subsection{Terrestrial Grid Balancing}
+
+OERC-S enables real-time balancing markets with:
+\begin{itemize}
+    \item 5-second finality windows for frequency response
+    \item Automated matching of DER aggregators
+    \item Cryptographic settlement proofs for regulators
+\end{itemize}
+
+\subsection{Space-Based Solar Power}
+
+For SBSP systems, OERC-S supports:
+\begin{itemize}
+    \item Orbital window-aligned Intents
+    \item Multi-point delivery with ground station switching
+    \item Atmospheric loss attestation in delivery proofs
+\end{itemize}
+
+\section{Conclusion}
+
+OERC-S provides a foundation for next-generation energy markets requiring deterministic finality and post-quantum security. The four-phase state machine clearly delineates intent from obligation, with the Collapse operation creating irreversible payment commitments only upon confirmed delivery.
+
+As SBSP systems become commercially viable and quantum computing advances, protocols like OERC-S will be essential for maintaining secure, efficient energy markets. Future work includes formal verification of the protocol, performance optimization for high-frequency trading, and integration with existing ISO market systems.
+
+The specification is available as an open standard to encourage adoption and interoperability across energy market implementations.
+
+\bibliographystyle{plain}
+\bibliography{paper}
+
+\end{document}

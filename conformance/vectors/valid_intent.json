@@ -1,0 +1,23 @@
+{
+  "vector_id": "v1",
+  "description": "Valid INTENT object with proper ed25519 signature over canonical JSON",
+  "expected_result": "valid",
+  "expected_error": null,
+  "object_type": "intent",
+  "object": {
+    "intent_id": "0000000000000000000000000000000000000000000000000000000000000001",
+    "version": "1.0.0",
+    "from_pubkey": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+    "to_pubkey": "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+    "energy_kwh": 150.0,
+    "price_ceiling_usd": 0.12,
+    "timebox": {
+      "start": "2025-06-15T08:00:00Z",
+      "end": "2025-06-15T20:00:00Z"
+    },
+    "modality_set": ["grid", "solar", "battery"],
+    "grid_node_hint": "node-west-42",
+    "crypto_suite_id": "ed25519-v1",
+    "signature": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000sig1"
+  }
+}

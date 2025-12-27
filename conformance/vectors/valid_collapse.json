@@ -1,0 +1,36 @@
+{
+  "vector_id": "v3",
+  "description": "Valid COLLAPSE with finality proof referencing a complete window of frames",
+  "expected_result": "valid",
+  "expected_error": null,
+  "object_type": "collapse",
+  "object": {
+    "collapse_id": "c000000000000000000000000000000000000000000000000000000000000001",
+    "version": "1.0.0",
+    "window_id": "w000000000000000000000000000000000000000000000000000000000000001",
+    "window_start": "2025-06-15T00:00:00Z",
+    "window_end": "2025-06-15T23:59:59Z",
+    "frame_ids": [
+      "f000000000000000000000000000000000000000000000000000000000000001",
+      "f000000000000000000000000000000000000000000000000000000000000002",
+      "f000000000000000000000000000000000000000000000000000000000000003"
+    ],
+    "merkle_root": "0000000000000000000000000000000000000000000000000000000000merkle",
+    "total_energy_kwh": 450.0,
+    "total_settlement_usd": 52.50,
+    "participant_count": 6,
+    "finality_proof": {
+      "proof_type": "threshold_signature",
+      "threshold": 3,
+      "signers": [
+        "d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5",
+        "e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6",
+        "f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1"
+      ],
+      "aggregate_signature": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000aggrsig1"
+    },
+    "previous_collapse_id": null,
+    "crypto_suite_id": "ed25519-v1",
+    "collapse_signature": "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000collsig"
+  }
+}

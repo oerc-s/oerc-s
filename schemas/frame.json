@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:oerc-s:schema:frame:v0.1",
+  "$source": "https://oerc-s.github.io/oerc-s/schemas/frame.json",
+  "title": "OERC-S FRAME Object",
+  "description": "A FRAME represents a proposed routing path for energy transfer, composed of one or more segments through intermediate nodes.",
+  "type": "object",
+  "properties": {
+    "frame_id": {
+      "type": "string",
+      "description": "Unique identifier for the frame (hex encoded)",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "intent_id": {
+      "type": "string",
+      "description": "Reference to the parent INTENT (hex encoded)",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "seq_no": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Sequence number for ordering multiple frames within an intent"
+    },
+    "segments": {
+      "type": "array",
+      "description": "Ordered list of energy transfer segments forming the route",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from_pubkey": {
+            "type": "string",
+            "description": "Source node public key for this segment (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "to_pubkey": {
+            "type": "string",
+            "description": "Destination node public key for this segment (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "modality": {
+            "type": "string",
+            "description": "Energy transfer modality for this segment",
+            "enum": ["laser", "microwave", "storage", "relay"]
+          },
+          "energy_j_partial": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 18446744073709551615,
+            "description": "Energy allocated to this segment in joules (uint64)"
+          },
+          "commitment_hash": {
+            "type": "string",
+            "description": "Cryptographic commitment for this segment (hex encoded)",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "loss_estimate": {
+            "type": "object",
+            "description": "Estimated energy loss range for this segment (as fraction 0.0-1.0)",
+            "properties": {
+              "min": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Minimum estimated loss fraction"
+              },
+              "max": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Maximum estimated loss fraction"
+              }
+            },
+            "required": ["min", "max"],
+            "additionalProperties": false
+          },
+          "segment_timebox": {
+            "type": "object",
+            "description": "Time window for this specific segment",
+            "properties": {
+              "t_start": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Segment start time in ISO8601 format"
+              },
+              "t_end": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Segment end time in ISO8601 format"
+              }
+            },
+            "required": ["t_start", "t_end"],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "from_pubkey",
+          "to_pubkey",
+          "modality",
+          "energy_j_partial",
+          "commitment_hash",
+          "loss_estimate",
+          "segment_timebox"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "crypto_suite_id": {
+      "type": "string",
+      "description": "Cryptographic suite used for signatures",
+      "enum": [
+        "ed25519-blake3",
+        "secp256k1-sha256",
+        "dilithium3-sha3",
+        "sphincs-sha256"
+      ]
+    },
+    "sigset": {
+      "type": "array",
+      "description": "Set of signatures from nodes participating in this frame",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pubkey": {
+            "type": "string",
+            "description": "Public key of signer (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "sig": {
+            "type": "string",
+            "description": "Signature bytes (hex encoded)",
+            "pattern": "^[0-9a-f]+$"
+          },
+          "suite_id": {
+            "type": "string",
+            "description": "Cryptographic suite used for this signature",
+            "enum": [
+              "ed25519-blake3",
+              "secp256k1-sha256",
+              "dilithium3-sha3",
+              "sphincs-sha256"
+            ]
+          }
+        },
+        "required": ["pubkey", "sig", "suite_id"],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "frame_id",
+    "intent_id",
+    "seq_no",
+    "segments",
+    "crypto_suite_id",
+    "sigset"
+  ],
+  "additionalProperties": false
+}

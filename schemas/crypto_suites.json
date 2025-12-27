@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:oerc-s:schema:crypto_suites:v0.1",
+  "$source": "https://oerc-s.github.io/oerc-s/schemas/crypto_suites.json",
+  "title": "OERC-S Crypto-Agile Suite Registry",
+  "description": "Registry of cryptographic suites for OERC-S protocol, supporting classical, post-quantum, and hybrid algorithms",
+  "version": "1.0.0",
+
+  "definitions": {
+    "suite_type": {
+      "type": "string",
+      "enum": ["sign", "kem", "hybrid-sign", "hybrid-kem"],
+      "description": "Type of cryptographic operation supported by the suite"
+    },
+    "suite_status": {
+      "type": "string",
+      "enum": ["active", "deprecated", "experimental"],
+      "description": "Current status of the suite in the registry"
+    }
+  },
+
+  "suites": {
+    "classical": {
+      "ed25519-v1": {
+        "suite_id": "ed25519-v1",
+        "type": "sign",
+        "algorithms": ["Ed25519"],
+        "pubkey_bytes": 32,
+        "sig_bytes": 64,
+        "security_level": 128,
+        "status": "active",
+        "reference": "RFC 8032",
+        "description": "Edwards-curve Digital Signature Algorithm using Curve25519",
+        "key_generation": {
+          "method": "deterministic",
+          "seed_bytes": 32
+        }
+      },
+      "x25519-v1": {
+        "suite_id": "x25519-v1",
+        "type": "kem",
+        "algorithms": ["X25519"],
+        "pubkey_bytes": 32,
+        "shared_secret_bytes": 32,
+        "ciphertext_bytes": 32,
+        "security_level": 128,
+        "status": "active",
+        "reference": "RFC 7748",
+        "description": "Elliptic curve Diffie-Hellman using Curve25519",
+        "key_generation": {
+          "method": "deterministic",
+          "seed_bytes": 32
+        }
+      }
+    },
+
+    "pqc": {
+      "ml-dsa-65-v1": {
+        "suite_id": "ml-dsa-65-v1",
+        "type": "sign",
+        "algorithms": ["ML-DSA-65"],
+        "pubkey_bytes": 1952,
+        "sig_bytes": 3293,
+        "security_level": 192,
+        "status": "active",
+        "reference": "FIPS 204",
+        "description": "Module-Lattice-Based Digital Signature Algorithm, security category 3",
+        "nist_category": 3,
+        "key_generation": {
+          "method": "randomized",
+          "seed_bytes": 32
+        },
+        "notes": "Formerly known as CRYSTALS-Dilithium"
+      },
+      "ml-kem-768-v1": {
+        "suite_id": "ml-kem-768-v1",
+        "type": "kem",
+        "algorithms": ["ML-KEM-768"],
+        "pubkey_bytes": 1184,
+        "shared_secret_bytes": 32,
+        "ciphertext_bytes": 1088,
+        "security_level": 192,
+        "status": "active",
+        "reference": "FIPS 203",
+        "description": "Module-Lattice-Based Key-Encapsulation Mechanism, security category 3",
+        "nist_category": 3,
+        "key_generation": {
+          "method": "randomized",
+          "seed_bytes": 64
+        },
+        "notes": "Formerly known as CRYSTALS-Kyber"
+      }
+    },
+
+    "hybrid": {
+      "hybrid-sig-v1": {
+        "suite_id": "hybrid-sig-v1",
+        "type": "hybrid-sign",
+        "algorithms": ["Ed25519", "ML-DSA-65"],
+        "components": {
+          "classical": "ed25519-v1",
+          "pqc": "ml-dsa-65-v1"
+        },
+        "pubkey_bytes": {
+          "ed25519": 32,
+          "ml_dsa_65": 1952,
+          "total": 1984
+        },
+        "sig_bytes": {
+          "ed25519": 64,
+          "ml_dsa_65": 3293,
+          "total": 3357
+        },
+        "security_level": 192,
+        "status": "active",
+        "reference": "IETF draft-ounsworth-pq-composite-sigs",
+        "description": "Composite signature requiring both Ed25519 and ML-DSA-65 signatures",
+        "validation_rules": {
+          "signature_order": ["ed25519", "ml_dsa_65"],
+          "both_required": true,
+          "same_identity": true,
+          "failure_mode": "fail_if_any_invalid"
+        },
+        "binding": {
+          "method": "concatenation",
+          "domain_separator": "OERC-S-HYBRID-SIG-V1"
+        }
+      },
+      "hybrid-kem-v1": {
+        "suite_id": "hybrid-kem-v1",
+        "type": "hybrid-kem",
+        "algorithms": ["X25519", "ML-KEM-768"],
+        "components": {
+          "classical": "x25519-v1",
+          "pqc": "ml-kem-768-v1"
+        },
+        "pubkey_bytes": {
+          "x25519": 32,
+          "ml_kem_768": 1184,
+          "total": 1216
+        },
+        "shared_secret_bytes": 32,
+        "ciphertext_bytes": {
+          "x25519": 32,
+          "ml_kem_768": 1088,
+          "total": 1120
+        },
+        "security_level": 192,
+        "status": "active",
+        "reference": "IETF draft-ounsworth-pq-composite-kem",
+        "description": "Composite KEM combining X25519 and ML-KEM-768 shared secrets",
+        "combination_rules": {
+          "kem_order": ["x25519", "ml_kem_768"],
+          "both_required": true,
+          "secret_combination": "kdf",
+          "kdf": {
+            "algorithm": "HKDF-SHA256",
+            "info": "OERC-S-HYBRID-KEM-V1",
+            "output_bytes": 32
+          }
+        }
+      }
+    }
+  },
+
+  "registry_metadata": {
+    "maintainer": "OERC-S Protocol Team",
+    "last_updated": "2025-01-01",
+    "registry_version": "1.0.0",
+    "deprecation_policy": {
+      "notice_period_days": 365,
+      "transition_period_days": 730,
+      "description": "Suites are deprecated with 1 year notice and remain usable for 2 years after deprecation"
+    },
+    "extension_rules": {
+      "suite_id_format": "^[a-z0-9]+-v[0-9]+$",
+      "version_increment": "New versions for algorithm parameter changes",
+      "backward_compatibility": "Deprecated suites must remain parseable"
+    }
+  },
+
+  "validation": {
+    "suite_id_pattern": "^(ed25519|x25519|ml-dsa-65|ml-kem-768|hybrid-sig|hybrid-kem)-v[0-9]+$",
+    "required_fields": ["suite_id", "type", "algorithms", "pubkey_bytes", "security_level", "status", "reference"],
+    "type_specific_required": {
+      "sign": ["sig_bytes"],
+      "kem": ["ciphertext_bytes", "shared_secret_bytes"],
+      "hybrid-sign": ["sig_bytes", "components", "validation_rules"],
+      "hybrid-kem": ["ciphertext_bytes", "shared_secret_bytes", "components", "combination_rules"]
+    }
+  }
+}

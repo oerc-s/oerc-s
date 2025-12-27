@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>OERC-S v0.1</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">OERC-S v0.1</h1>
+</header>
+<h1 id="oerc-s-v0.1-orbital-energy-routing-clearing-standard">OERC-S
+v0.1: Orbital Energy Routing &amp; Clearing Standard</h1>
+<p><strong>Version:</strong> 0.1 <strong>Status:</strong> Draft
+<strong>Date:</strong> 2025-12-27 <strong>Authors:</strong>
+SPEC_ARCHITECT (Agent A) <strong>License:</strong> CC-BY-4.0</p>
+<hr />
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol type="1">
+<li><a href="#1-abstract">Abstract</a></li>
+<li><a href="#2-terminology">Terminology</a></li>
+<li><a href="#3-object-definitions">Object Definitions</a>
+<ul>
+<li>3.1 <a href="#31-intent">INTENT</a></li>
+<li>3.2 <a href="#32-frame">FRAME</a></li>
+<li>3.3 <a href="#33-collapse">COLLAPSE</a></li>
+</ul></li>
+<li><a href="#4-clearing-windows">Clearing Windows</a></li>
+<li><a href="#5-canonical-encoding-rules">Canonical Encoding
+Rules</a></li>
+<li><a href="#6-verification-rules">Verification Rules</a></li>
+<li><a href="#7-crypto-agility">Crypto-Agility</a></li>
+<li><a href="#8-conformance-requirements">Conformance
+Requirements</a></li>
+<li><a href="#9-security-considerations">Security
+Considerations</a></li>
+<li><a href="#10-iana-considerations">IANA Considerations</a></li>
+<li><a href="#appendix-a-test-vectors">Appendix A: Test Vectors</a></li>
+<li><a href="#appendix-b-json-schema">Appendix B: JSON Schema</a></li>
+<li><a href="#references">References</a></li>
+</ol>
+<hr />
+<h2 id="abstract">1. Abstract</h2>
+<p>OERC-S (Orbital Energy Routing &amp; Clearing Standard) defines a
+minimal, object-first protocol for routing, proving, and settling energy
+transfers in space-based power infrastructure. The protocol operates on
+a fundamental axiom: <strong>COLLAPSE is payable, everything else is
+not.</strong> INTENTs represent pre-allocation reservations that carry
+no settlement obligation; FRAMEs represent superposed streaming proofs
+that remain probabilistic until finalization; only COLLAPSE
+objects—emitted at clearing window boundaries—constitute binding,
+payable settlement records. This design ensures that streaming telemetry
+and routing negotiations impose zero settlement risk while maintaining
+cryptographic auditability, enables efficient netting across multi-hop
+relay topologies, and provides a clear demarcation between operational
+signaling and financial obligation. OERC-S is transport-agnostic,
+crypto-agile, and designed for deterministic verification across
+heterogeneous node implementations.</p>
+<hr />
+<h2 id="terminology">2. Terminology</h2>
+<p>The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”,
+“SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this
+document are to be interpreted as described in RFC 2119.</p>
+<h3 id="core-terms">2.1 Core Terms</h3>
+<p><strong>Node</strong>: Any entity capable of transmitting, receiving,
+relaying, or storing energy within the OERC-S network. Nodes are
+identified by public keys.</p>
+<p><strong>Energy Transfer</strong>: The physical movement of energy
+between nodes via any supported modality (laser, microwave, storage
+handoff, relay).</p>
+<p><strong>Intent</strong>: A cryptographically signed declaration of
+willingness to participate in an energy transfer within specified
+constraints. Non-binding until collapsed.</p>
+<p><strong>Frame</strong>: A streaming proof object representing partial
+or in-progress energy transfer. Frames are superposed—they represent
+probabilistic state until collapse.</p>
+<p><strong>Collapse</strong>: The finalization event that converts
+superposed frames into a single, deterministic, payable settlement
+record.</p>
+<p><strong>Window</strong>: A discrete time interval during which frames
+accumulate and at whose boundary collapse occurs.</p>
+<p><strong>Timebox</strong>: A temporal constraint defined by start and
+end timestamps in ISO 8601 format.</p>
+<p><strong>Modality</strong>: The physical mechanism of energy transfer:
+<code>laser</code>, <code>microwave</code>, <code>storage</code>, or
+<code>relay</code>.</p>
+<p><strong>Segment</strong>: A single hop within a multi-hop energy
+transfer, representing transmission from one node to another.</p>
+<p><strong>Netting</strong>: The process of aggregating and offsetting
+energy flows to produce net settlement obligations.</p>
+<p><strong>Canonical Form</strong>: The deterministic, reproducible
+encoding of an object for hashing and signature operations.</p>
+<h3 id="cryptographic-terms">2.2 Cryptographic Terms</h3>
+<p><strong>Crypto Suite</strong>: A named collection of algorithms for
+signing, verification, key exchange, and hashing.</p>
+<p><strong>Sigset</strong>: An array of signatures over an object’s
+canonical form, potentially from multiple signers using multiple crypto
+suites.</p>
+<p><strong>Commitment Hash</strong>: A cryptographic commitment to data
+that can be revealed later for verification.</p>
+<p><strong>Finality Proof</strong>: A cryptographic attestation that a
+collapse is valid and irreversible within protocol rules.</p>
+<h3 id="identifiers">2.3 Identifiers</h3>
+<p><strong>intent_id</strong>: BLAKE3 hash of the INTENT’s canonical
+encoding. 32 bytes.</p>
+<p><strong>frame_id</strong>: BLAKE3 hash of the FRAME’s canonical
+encoding. 32 bytes.</p>
+<p><strong>collapse_id</strong>: BLAKE3 hash of the COLLAPSE’s canonical
+encoding. 32 bytes.</p>
+<p><strong>window_id</strong>: Deterministic identifier for a clearing
+window, derived from window parameters.</p>
+<p><strong>pubkey</strong>: Public key identifying a node, encoded per
+the relevant crypto suite.</p>
+<h3 id="units">2.4 Units</h3>
+<p><strong>Joule (J)</strong>: The SI unit of energy. All energy
+quantities in OERC-S are denominated in joules.</p>
+<p><strong>Basis Point (bp)</strong>: One hundredth of one percent
+(0.01%). Used for fee specification.</p>
+<hr />
+<h2 id="object-definitions">3. Object Definitions</h2>
+<p>OERC-S defines three primary object types, each serving a distinct
+role in the energy routing and clearing lifecycle. Objects are immutable
+once created; modifications require new objects with new
+identifiers.</p>
+<h3 id="intent">3.1 INTENT</h3>
+<p>An INTENT represents a pre-allocation or reservation of energy
+transfer capacity between nodes. INTENTs are negotiation artifacts—they
+express willingness and constraints but carry no settlement
+obligation.</p>
+<h4 id="intent-fields">3.1.1 INTENT Fields</h4>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 23%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>intent_id</code></td>
+<td>bytes[32]</td>
+<td>BLAKE3 hash of canonical encoding (computed, not transmitted)</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>Protocol version. MUST be “OERC-S/0.1”</td>
+</tr>
+<tr>
+<td><code>tx_node_pubkey</code></td>
+<td>bytes</td>
+<td>Public key of the transmitting (source) node</td>
+</tr>
+<tr>
+<td><code>rx_node_pubkey</code></td>
+<td>bytes</td>
+<td>Public key of the receiving (destination) node</td>
+</tr>
+<tr>
+<td><code>timebox</code></td>
+<td>object</td>
+<td>Temporal constraints for the intent</td>
+</tr>
+<tr>
+<td><code>timebox.t_start</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp for validity start</td>
+</tr>
+<tr>
+<td><code>timebox.t_end</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp for validity end</td>
+</tr>
+<tr>
+<td><code>max_energy_j</code></td>
+<td>uint64</td>
+<td>Maximum energy in joules for this intent</td>
+</tr>
+<tr>
+<td><code>modality_set</code></td>
+<td>array[string]</td>
+<td>Acceptable transfer modalities</td>
+</tr>
+<tr>
+<td><code>location_tag</code></td>
+<td>object</td>
+<td>Spatial constraints and identifiers</td>
+</tr>
+<tr>
+<td><code>location_tag.orbit_regime</code></td>
+<td>string</td>
+<td>Orbital regime identifier (e.g., “LEO”, “GEO”, “L1”)</td>
+</tr>
+<tr>
+<td><code>location_tag.ephemeris_hash</code></td>
+<td>bytes[32]</td>
+<td>BLAKE3 hash of ephemeris data</td>
+</tr>
+<tr>
+<td><code>location_tag.footprint_id</code></td>
+<td>string</td>
+<td>Ground footprint identifier, if applicable</td>
+</tr>
+<tr>
+<td><code>crypto_suite_id</code></td>
+<td>string</td>
+<td>Identifier of the crypto suite used for signatures</td>
+</tr>
+<tr>
+<td><code>sigset</code></td>
+<td>array[object]</td>
+<td>Array of signatures over canonical form</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp of intent creation</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>Optional application-specific metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="intent-semantics">3.1.2 INTENT Semantics</h4>
+<ol type="1">
+<li><p>An INTENT is valid if and only if:</p>
+<ul>
+<li>All required fields are present and well-formed</li>
+<li><code>t_start</code> &lt; <code>t_end</code></li>
+<li><code>max_energy_j</code> &gt; 0</li>
+<li><code>modality_set</code> contains at least one valid modality</li>
+<li>At least one signature in <code>sigset</code> is valid over the
+canonical form</li>
+<li>The signing key matches either <code>tx_node_pubkey</code> or
+<code>rx_node_pubkey</code></li>
+</ul></li>
+<li><p>An INTENT becomes <strong>active</strong> when the current time
+&gt;= <code>t_start</code> and &lt; <code>t_end</code>.</p></li>
+<li><p>An INTENT expires when the current time &gt;= <code>t_end</code>.
+Expired INTENTs MUST NOT be used for new FRAMEs.</p></li>
+<li><p>Multiple INTENTs MAY exist between the same node pair with
+overlapping timeboxes. Resolution is application-specific.</p></li>
+<li><p>An INTENT does not guarantee energy will be transferred. It only
+establishes parameters for potential transfer.</p></li>
+</ol>
+<h4 id="intent-example-json">3.1.3 INTENT Example (JSON)</h4>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;version&quot;</span><span class="fu">:</span> <span class="st">&quot;OERC-S/0.1&quot;</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;tx_node_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;b4a3f2e1d0c9b8a7f6e5d4c3b2a19081706050403020100f0e0d0c0b0a090807&quot;</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;rx_node_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20&quot;</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;timebox&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;t_start&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T00:00:00Z&quot;</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;t_end&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T01:00:00Z&quot;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;max_energy_j&quot;</span><span class="fu">:</span> <span class="dv">1000000000</span><span class="fu">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;modality_set&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;laser&quot;</span><span class="ot">,</span> <span class="st">&quot;microwave&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;location_tag&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;orbit_regime&quot;</span><span class="fu">:</span> <span class="st">&quot;LEO&quot;</span><span class="fu">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;ephemeris_hash&quot;</span><span class="fu">:</span> <span class="st">&quot;a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2&quot;</span><span class="fu">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;footprint_id&quot;</span><span class="fu">:</span> <span class="st">&quot;NA-WEST-001&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span><span class="fu">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;sigset&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;signer_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;b4a3f2e1d0c9b8a7f6e5d4c3b2a19081706050403020100f0e0d0c0b0a090807&quot;</span><span class="fu">,</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;signature&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span><span class="fu">,</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-26T23:55:00Z&quot;</span><span class="fu">,</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;metadata&quot;</span><span class="fu">:</span> <span class="kw">null</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="frame">3.2 FRAME</h3>
+<p>A FRAME represents superposed streaming proofs of energy transfer.
+FRAMEs are emitted during active energy transmission to provide
+real-time auditability without creating settlement obligations. FRAMEs
+reference an INTENT and contain one or more segments representing
+individual hops.</p>
+<h4 id="frame-fields">3.2.1 FRAME Fields</h4>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 23%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>frame_id</code></td>
+<td>bytes[32]</td>
+<td>BLAKE3 hash of canonical encoding (computed, not transmitted)</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>Protocol version. MUST be “OERC-S/0.1”</td>
+</tr>
+<tr>
+<td><code>intent_id</code></td>
+<td>bytes[32]</td>
+<td>Reference to parent INTENT</td>
+</tr>
+<tr>
+<td><code>seq_no</code></td>
+<td>uint64</td>
+<td>Sequence number within the intent, starting at 0</td>
+</tr>
+<tr>
+<td><code>segments</code></td>
+<td>array[object]</td>
+<td>Array of segment objects</td>
+</tr>
+<tr>
+<td><code>crypto_suite_id</code></td>
+<td>string</td>
+<td>Identifier of the crypto suite used for signatures</td>
+</tr>
+<tr>
+<td><code>sigset</code></td>
+<td>array[object]</td>
+<td>Array of signatures over canonical form</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp of frame creation</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>Optional application-specific metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="segment-fields">3.2.2 Segment Fields</h4>
+<p>Each segment within a FRAME represents a single hop in the energy
+transfer path.</p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 23%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>segment_id</code></td>
+<td>uint32</td>
+<td>Segment index within this frame, starting at 0</td>
+</tr>
+<tr>
+<td><code>from_pubkey</code></td>
+<td>bytes</td>
+<td>Public key of the transmitting node for this segment</td>
+</tr>
+<tr>
+<td><code>to_pubkey</code></td>
+<td>bytes</td>
+<td>Public key of the receiving node for this segment</td>
+</tr>
+<tr>
+<td><code>modality</code></td>
+<td>string</td>
+<td>Transfer modality for this segment</td>
+</tr>
+<tr>
+<td><code>energy_j_partial</code></td>
+<td>uint64</td>
+<td>Energy transferred in this segment (joules)</td>
+</tr>
+<tr>
+<td><code>commitment_hash</code></td>
+<td>bytes[32]</td>
+<td>Cryptographic commitment to segment data</td>
+</tr>
+<tr>
+<td><code>loss_estimate</code></td>
+<td>object</td>
+<td>Estimated energy loss during transfer</td>
+</tr>
+<tr>
+<td><code>loss_estimate.min</code></td>
+<td>uint64</td>
+<td>Minimum estimated loss (joules)</td>
+</tr>
+<tr>
+<td><code>loss_estimate.max</code></td>
+<td>uint64</td>
+<td>Maximum estimated loss (joules)</td>
+</tr>
+<tr>
+<td><code>segment_timebox</code></td>
+<td>object</td>
+<td>Temporal bounds for this segment</td>
+</tr>
+<tr>
+<td><code>segment_timebox.t_start</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp for segment start</td>
+</tr>
+<tr>
+<td><code>segment_timebox.t_end</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp for segment end</td>
+</tr>
+</tbody>
+</table>
+<h4 id="frame-semantics">3.2.3 FRAME Semantics</h4>
+<ol type="1">
+<li><p>A FRAME is valid if and only if:</p>
+<ul>
+<li>All required fields are present and well-formed</li>
+<li><code>intent_id</code> references a valid, active INTENT</li>
+<li><code>seq_no</code> is greater than any previously observed
+<code>seq_no</code> for this intent</li>
+<li>At least one segment is present</li>
+<li>All segments are internally consistent (see Section 6.4)</li>
+<li>At least one signature in <code>sigset</code> is valid over the
+canonical form</li>
+<li>Segment timeboxes fall within the parent INTENT’s timebox</li>
+</ul></li>
+<li><p>FRAMEs are <strong>superposed</strong>—they represent
+probabilistic state. Multiple FRAMEs with the same
+<code>intent_id</code> and overlapping time ranges MAY coexist.</p></li>
+<li><p>FRAMEs do not create settlement obligations. They are evidence,
+not invoices.</p></li>
+<li><p>The sum of <code>energy_j_partial</code> across all segments in a
+FRAME SHOULD NOT exceed <code>max_energy_j</code> from the parent
+INTENT, but this is not a hard constraint (overdelivery is
+possible).</p></li>
+<li><p>Segment ordering within a FRAME represents the physical path of
+energy flow. <code>segments[0].from_pubkey</code> SHOULD match the
+INTENT’s <code>tx_node_pubkey</code>.</p></li>
+</ol>
+<h4 id="frame-example-json">3.2.4 FRAME Example (JSON)</h4>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;version&quot;</span><span class="fu">:</span> <span class="st">&quot;OERC-S/0.1&quot;</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;intent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4&quot;</span><span class="fu">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;seq_no&quot;</span><span class="fu">:</span> <span class="dv">42</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;segments&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;segment_id&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;from_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;b4a3f2e1d0c9b8a7f6e5d4c3b2a19081706050403020100f0e0d0c0b0a090807&quot;</span><span class="fu">,</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;to_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;5566778899aabbccddeeff00112233445566778899aabbccddeeff0011223344&quot;</span><span class="fu">,</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;modality&quot;</span><span class="fu">:</span> <span class="st">&quot;laser&quot;</span><span class="fu">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;energy_j_partial&quot;</span><span class="fu">:</span> <span class="dv">500000000</span><span class="fu">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;commitment_hash&quot;</span><span class="fu">:</span> <span class="st">&quot;1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef&quot;</span><span class="fu">,</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;loss_estimate&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;min&quot;</span><span class="fu">:</span> <span class="dv">1000000</span><span class="fu">,</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;max&quot;</span><span class="fu">:</span> <span class="dv">5000000</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;segment_timebox&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;t_start&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T00:15:00Z&quot;</span><span class="fu">,</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;t_end&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T00:15:30Z&quot;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;segment_id&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;from_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;5566778899aabbccddeeff00112233445566778899aabbccddeeff0011223344&quot;</span><span class="fu">,</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;to_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20&quot;</span><span class="fu">,</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;modality&quot;</span><span class="fu">:</span> <span class="st">&quot;microwave&quot;</span><span class="fu">,</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;energy_j_partial&quot;</span><span class="fu">:</span> <span class="dv">495000000</span><span class="fu">,</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;commitment_hash&quot;</span><span class="fu">:</span> <span class="st">&quot;fedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321&quot;</span><span class="fu">,</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;loss_estimate&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;min&quot;</span><span class="fu">:</span> <span class="dv">2000000</span><span class="fu">,</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;max&quot;</span><span class="fu">:</span> <span class="dv">8000000</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;segment_timebox&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;t_start&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T00:15:30Z&quot;</span><span class="fu">,</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;t_end&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T00:16:00Z&quot;</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span><span class="fu">,</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;sigset&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;signer_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;5566778899aabbccddeeff00112233445566778899aabbccddeeff0011223344&quot;</span><span class="fu">,</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;signature&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span><span class="fu">,</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T00:16:01Z&quot;</span><span class="fu">,</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;metadata&quot;</span><span class="fu">:</span> <span class="kw">null</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="collapse">3.3 COLLAPSE</h3>
+<p>A COLLAPSE is the finality object—the only object type that creates a
+binding, payable settlement obligation. COLLAPSE objects are emitted at
+clearing window boundaries and represent the deterministic resolution of
+all superposed FRAMEs within that window.</p>
+<h4 id="collapse-fields">3.3.1 COLLAPSE Fields</h4>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 23%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>collapse_id</code></td>
+<td>bytes[32]</td>
+<td>BLAKE3 hash of canonical encoding (computed, not transmitted)</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>string</td>
+<td>Protocol version. MUST be “OERC-S/0.1”</td>
+</tr>
+<tr>
+<td><code>intent_id</code></td>
+<td>bytes[32]</td>
+<td>Reference to parent INTENT</td>
+</tr>
+<tr>
+<td><code>window_id</code></td>
+<td>bytes[32]</td>
+<td>Identifier of the clearing window</td>
+</tr>
+<tr>
+<td><code>net_energy_j</code></td>
+<td>int64</td>
+<td>Net energy transferred (signed; negative = reverse flow)</td>
+</tr>
+<tr>
+<td><code>net_energy_confidence</code></td>
+<td>object</td>
+<td>Confidence bounds on net energy</td>
+</tr>
+<tr>
+<td><code>net_energy_confidence.min</code></td>
+<td>int64</td>
+<td>Minimum net energy (joules)</td>
+</tr>
+<tr>
+<td><code>net_energy_confidence.max</code></td>
+<td>int64</td>
+<td>Maximum net energy (joules)</td>
+</tr>
+<tr>
+<td><code>fees</code></td>
+<td>object</td>
+<td>Fee specification for this collapse</td>
+</tr>
+<tr>
+<td><code>fees.type</code></td>
+<td>string</td>
+<td>Fee type: “basis_points” or “absolute_j”</td>
+</tr>
+<tr>
+<td><code>fees.value</code></td>
+<td>uint64</td>
+<td>Fee amount (basis points or joules)</td>
+</tr>
+<tr>
+<td><code>finality_proof</code></td>
+<td>object</td>
+<td>Cryptographic proof of finality</td>
+</tr>
+<tr>
+<td><code>finality_proof.merkle_root</code></td>
+<td>bytes[32]</td>
+<td>Merkle root of all frames in window</td>
+</tr>
+<tr>
+<td><code>finality_proof.signer_set</code></td>
+<td>array[bytes]</td>
+<td>Public keys of finality attesters</td>
+</tr>
+<tr>
+<td><code>finality_proof.window_params</code></td>
+<td>object</td>
+<td>Window parameters used for collapse</td>
+</tr>
+<tr>
+<td><code>finality_proof.signatures</code></td>
+<td>array[object]</td>
+<td>Signatures from finality attesters</td>
+</tr>
+<tr>
+<td><code>crypto_suite_id</code></td>
+<td>string</td>
+<td>Identifier of the crypto suite used</td>
+</tr>
+<tr>
+<td><code>sigset</code></td>
+<td>array[object]</td>
+<td>Array of signatures over canonical form</td>
+</tr>
+<tr>
+<td><code>created_at</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp of collapse creation</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td>object</td>
+<td>Optional application-specific metadata</td>
+</tr>
+</tbody>
+</table>
+<h4 id="finality-proof-structure">3.3.2 Finality Proof Structure</h4>
+<p>The <code>finality_proof</code> object provides cryptographic
+evidence that the collapse is valid and was produced correctly.</p>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 23%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>merkle_root</code></td>
+<td>bytes[32]</td>
+<td>Root of Merkle tree over all frame_ids in window</td>
+</tr>
+<tr>
+<td><code>signer_set</code></td>
+<td>array[bytes]</td>
+<td>Ordered list of attester public keys</td>
+</tr>
+<tr>
+<td><code>window_params</code></td>
+<td>object</td>
+<td>Parameters defining the window</td>
+</tr>
+<tr>
+<td><code>window_params.window_start</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp for window start</td>
+</tr>
+<tr>
+<td><code>window_params.window_end</code></td>
+<td>string</td>
+<td>ISO 8601 timestamp for window end</td>
+</tr>
+<tr>
+<td><code>window_params.window_duration_ms</code></td>
+<td>uint64</td>
+<td>Window duration in milliseconds</td>
+</tr>
+<tr>
+<td><code>window_params.netting_algorithm</code></td>
+<td>string</td>
+<td>Algorithm used for netting</td>
+</tr>
+<tr>
+<td><code>signatures</code></td>
+<td>array[object]</td>
+<td>Signatures from signer_set members</td>
+</tr>
+</tbody>
+</table>
+<h4 id="collapse-semantics">3.3.3 COLLAPSE Semantics</h4>
+<ol type="1">
+<li><p>A COLLAPSE is valid if and only if:</p>
+<ul>
+<li>All required fields are present and well-formed</li>
+<li><code>intent_id</code> references a valid INTENT</li>
+<li><code>window_id</code> is correctly derived from
+<code>window_params</code></li>
+<li><code>net_energy_confidence.min</code> &lt;=
+<code>net_energy_j</code> &lt;=
+<code>net_energy_confidence.max</code></li>
+<li><code>finality_proof</code> is valid (see Section 6.5)</li>
+<li>Sufficient signatures in <code>finality_proof.signatures</code>
+(threshold defined by application)</li>
+<li>At least one signature in <code>sigset</code> is valid over the
+canonical form</li>
+</ul></li>
+<li><p>A COLLAPSE is <strong>payable</strong>. It represents a binding
+settlement obligation between parties.</p></li>
+<li><p>Only one COLLAPSE MAY exist for a given (<code>intent_id</code>,
+<code>window_id</code>) pair. Duplicate collapses MUST be
+rejected.</p></li>
+<li><p>COLLAPSE objects are immutable. Disputes are handled by creating
+new INTENTs and COLLAPSE objects, not by modifying existing
+ones.</p></li>
+<li><p>The <code>net_energy_j</code> field is signed. Positive values
+indicate energy flow from <code>tx_node_pubkey</code> to
+<code>rx_node_pubkey</code> as specified in the INTENT. Negative values
+indicate reverse flow.</p></li>
+</ol>
+<h4 id="collapse-example-json">3.3.4 COLLAPSE Example (JSON)</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;version&quot;</span><span class="fu">:</span> <span class="st">&quot;OERC-S/0.1&quot;</span><span class="fu">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;intent_id&quot;</span><span class="fu">:</span> <span class="st">&quot;c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4&quot;</span><span class="fu">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;window_id&quot;</span><span class="fu">:</span> <span class="st">&quot;abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789&quot;</span><span class="fu">,</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;net_energy_j&quot;</span><span class="fu">:</span> <span class="dv">485000000</span><span class="fu">,</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;net_energy_confidence&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;min&quot;</span><span class="fu">:</span> <span class="dv">480000000</span><span class="fu">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;max&quot;</span><span class="fu">:</span> <span class="dv">490000000</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;fees&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;basis_points&quot;</span><span class="fu">,</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;value&quot;</span><span class="fu">:</span> <span class="dv">25</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;finality_proof&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;merkle_root&quot;</span><span class="fu">:</span> <span class="st">&quot;9876543210fedcba9876543210fedcba9876543210fedcba9876543210fedcba&quot;</span><span class="fu">,</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;signer_set&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;aabbccdd11223344aabbccdd11223344aabbccdd11223344aabbccdd11223344&quot;</span><span class="ot">,</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;55667788aabbccdd55667788aabbccdd55667788aabbccdd55667788aabbccdd&quot;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;window_params&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;window_start&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T00:00:00Z&quot;</span><span class="fu">,</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;window_end&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T01:00:00Z&quot;</span><span class="fu">,</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;window_duration_ms&quot;</span><span class="fu">:</span> <span class="dv">3600000</span><span class="fu">,</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;netting_algorithm&quot;</span><span class="fu">:</span> <span class="st">&quot;SIMPLE_SUM_V1&quot;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;signatures&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;signer_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;aabbccdd11223344aabbccdd11223344aabbccdd11223344aabbccdd11223344&quot;</span><span class="fu">,</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;signature&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span><span class="fu">,</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">{</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;signer_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;55667788aabbccdd55667788aabbccdd55667788aabbccdd55667788aabbccdd&quot;</span><span class="fu">,</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;signature&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span><span class="fu">,</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span><span class="fu">,</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;sigset&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;signer_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;b4a3f2e1d0c9b8a7f6e5d4c3b2a19081706050403020100f0e0d0c0b0a090807&quot;</span><span class="fu">,</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;signature&quot;</span><span class="fu">:</span> <span class="st">&quot;...&quot;</span><span class="fu">,</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-12-27T01:00:05Z&quot;</span><span class="fu">,</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;metadata&quot;</span><span class="fu">:</span> <span class="kw">null</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<hr />
+<h2 id="clearing-windows">4. Clearing Windows</h2>
+<p>Clearing windows provide temporal boundaries for netting and
+settlement. All FRAME objects are associated with exactly one window,
+and COLLAPSE objects are emitted at window close.</p>
+<h3 id="window-definition">4.1 Window Definition</h3>
+<p>A clearing window is defined by:</p>
+<ol type="1">
+<li><strong>window_start</strong>: The inclusive start time (ISO
+8601)</li>
+<li><strong>window_end</strong>: The exclusive end time (ISO 8601)</li>
+<li><strong>window_duration_ms</strong>: Duration in milliseconds (MUST
+equal window_end - window_start)</li>
+<li><strong>netting_algorithm</strong>: The algorithm used to compute
+net values from frames</li>
+</ol>
+<p>The <code>window_id</code> is computed as:</p>
+<pre><code>window_id = BLAKE3(canonical_encode({
+  &quot;window_start&quot;: &lt;window_start&gt;,
+  &quot;window_end&quot;: &lt;window_end&gt;,
+  &quot;window_duration_ms&quot;: &lt;window_duration_ms&gt;,
+  &quot;netting_algorithm&quot;: &lt;netting_algorithm&gt;
+}))</code></pre>
+<h3 id="window-lifecycle">4.2 Window Lifecycle</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                        WINDOW LIFECYCLE                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────┐    ┌───────────┐    ┌──────────┐    ┌──────────┐  │
+│  │  PENDING │───▶│  ACTIVE   │───▶│ CLOSING  │───▶│ FINALIZED│  │
+│  └──────────┘    └───────────┘    └──────────┘    └──────────┘  │
+│       │               │                │                │        │
+│       │          FRAMEs stream         │          COLLAPSE       │
+│       │          and accumulate        │          emitted        │
+│       │                                │                         │
+│       ▼                                ▼                         │
+│  t &lt; window_start              t = window_end              t+Δ   │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘</code></pre>
+<ol type="1">
+<li><strong>PENDING</strong>: Window is defined but not yet active. No
+frames accepted.</li>
+<li><strong>ACTIVE</strong>: Current time is within [window_start,
+window_end). Frames stream in.</li>
+<li><strong>CLOSING</strong>: Window has ended. No new frames accepted.
+Netting computation in progress.</li>
+<li><strong>FINALIZED</strong>: COLLAPSE emitted. Window is
+immutable.</li>
+</ol>
+<h3 id="frame-window-association">4.3 Frame-Window Association</h3>
+<p>A FRAME is associated with a window if and only if:</p>
+<ol type="1">
+<li>The frame’s <code>created_at</code> timestamp falls within
+[window_start, window_end)</li>
+<li>All segment timeboxes fall within [window_start, window_end)</li>
+</ol>
+<p>Frames that span multiple windows MUST be split into multiple frames,
+one per window.</p>
+<h3 id="netting-process">4.4 Netting Process</h3>
+<p>At window close, the netting algorithm processes all valid
+frames:</p>
+<ol type="1">
+<li>Collect all frames with matching <code>intent_id</code> and valid
+window membership</li>
+<li>Order frames by <code>seq_no</code></li>
+<li>For each segment in each frame, accumulate energy values</li>
+<li>Apply loss estimates to compute net transfer</li>
+<li>Compute confidence bounds from aggregate loss estimates</li>
+<li>Emit COLLAPSE with net values</li>
+</ol>
+<h3 id="standard-netting-algorithms">4.5 Standard Netting
+Algorithms</h3>
+<h4 id="simple_sum_v1">4.5.1 SIMPLE_SUM_V1</h4>
+<p>The simplest netting algorithm. For each intent:</p>
+<pre><code>net_energy_j = Σ (segment.energy_j_partial) - Σ (segment.loss_estimate.max)
+net_energy_confidence.min = Σ (segment.energy_j_partial) - Σ (segment.loss_estimate.max)
+net_energy_confidence.max = Σ (segment.energy_j_partial) - Σ (segment.loss_estimate.min)</code></pre>
+<h4 id="weighted_confidence_v1">4.5.2 WEIGHTED_CONFIDENCE_V1</h4>
+<p>Uses confidence-weighted averaging:</p>
+<pre><code>net_energy_j = Σ (segment.energy_j_partial * confidence_weight) / Σ (confidence_weight)
+where confidence_weight = 1 / (segment.loss_estimate.max - segment.loss_estimate.min + 1)</code></pre>
+<h3 id="window-parameters">4.6 Window Parameters</h3>
+<p>Implementations MUST support configurable window parameters:</p>
+<table>
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 15%" />
+<col style="width: 23%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>window_duration_ms</code></td>
+<td>uint64</td>
+<td>3600000</td>
+<td>Window duration (default: 1 hour)</td>
+</tr>
+<tr>
+<td><code>min_frames_for_collapse</code></td>
+<td>uint32</td>
+<td>1</td>
+<td>Minimum frames required to emit collapse</td>
+</tr>
+<tr>
+<td><code>collapse_delay_ms</code></td>
+<td>uint64</td>
+<td>5000</td>
+<td>Delay after window_end before collapse</td>
+</tr>
+<tr>
+<td><code>netting_algorithm</code></td>
+<td>string</td>
+<td>“SIMPLE_SUM_V1”</td>
+<td>Algorithm for netting computation</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="canonical-encoding-rules">5. Canonical Encoding Rules</h2>
+<p>Deterministic encoding is critical for reproducible hashing and
+signature verification across implementations.</p>
+<h3 id="interchange-format-json">5.1 Interchange Format (JSON)</h3>
+<p>JSON is the primary format for human-readable interchange and
+debugging.</p>
+<h4 id="json-encoding-rules">5.1.1 JSON Encoding Rules</h4>
+<ol type="1">
+<li><strong>Character Encoding</strong>: UTF-8, no BOM</li>
+<li><strong>Numeric Values</strong>:
+<ul>
+<li>Integers: No leading zeros, no plus sign</li>
+<li>No floating point for energy values (use uint64 joules)</li>
+</ul></li>
+<li><strong>String Values</strong>:
+<ul>
+<li>Escape only required characters: <code>"</code>, <code>\</code>, and
+control characters</li>
+<li>Use <code>\uXXXX</code> for control characters</li>
+</ul></li>
+<li><strong>Binary Data</strong>:
+<ul>
+<li>Encode as lowercase hexadecimal strings</li>
+<li>No <code>0x</code> prefix</li>
+</ul></li>
+<li><strong>Null Values</strong>:
+<ul>
+<li>Use JSON <code>null</code>, never omit fields</li>
+</ul></li>
+<li><strong>Arrays</strong>:
+<ul>
+<li>No trailing commas</li>
+<li>Preserve order (order is significant)</li>
+</ul></li>
+<li><strong>Objects</strong>:
+<ul>
+<li>No trailing commas</li>
+<li>No duplicate keys</li>
+</ul></li>
+</ol>
+<h3 id="wire-format-cbor">5.2 Wire Format (CBOR)</h3>
+<p>CBOR (RFC 8949) is the binary wire format for efficient
+transmission.</p>
+<h4 id="cbor-encoding-rules">5.2.1 CBOR Encoding Rules</h4>
+<ol type="1">
+<li><strong>Deterministic Encoding</strong>: Use Core Deterministic
+Encoding (RFC 8949 Section 4.2)</li>
+<li><strong>Map Key Ordering</strong>: Lexicographic ordering of UTF-8
+encoded keys</li>
+<li><strong>Integer Encoding</strong>: Smallest valid encoding</li>
+<li><strong>Binary Data</strong>: Major type 2 (byte string)</li>
+<li><strong>Strings</strong>: Major type 3 (text string), UTF-8</li>
+<li><strong>Arrays</strong>: Major type 4, preserve order</li>
+<li><strong>Maps</strong>: Major type 5, deterministic key ordering</li>
+</ol>
+<h3 id="canonical-form">5.3 Canonical Form</h3>
+<p>For hashing and signatures, objects MUST be encoded in canonical
+form.</p>
+<h4 id="canonicalization-rules">5.3.1 Canonicalization Rules</h4>
+<ol type="1">
+<li><strong>Field Ordering</strong>: Alphabetical by field name (Unicode
+code point order)</li>
+<li><strong>No Optional Fields</strong>: All fields MUST be present. Use
+<code>null</code> for absent values.</li>
+<li><strong>Computed Fields Excluded</strong>: <code>intent_id</code>,
+<code>frame_id</code>, <code>collapse_id</code> are NOT included in
+canonical form (they are derived from it)</li>
+<li><strong>Signature Exclusion</strong>: <code>sigset</code> is NOT
+included in canonical form for that object</li>
+<li><strong>Whitespace</strong>: No whitespace in JSON canonical
+form</li>
+<li><strong>Format</strong>: CBOR for hashing, JSON for debugging
+only</li>
+</ol>
+<h4 id="canonical-field-order">5.3.2 Canonical Field Order</h4>
+<p><strong>INTENT canonical fields (alphabetical):</strong></p>
+<pre><code>created_at, crypto_suite_id, location_tag, max_energy_j, metadata,
+modality_set, rx_node_pubkey, timebox, tx_node_pubkey, version</code></pre>
+<p><strong>FRAME canonical fields (alphabetical):</strong></p>
+<pre><code>created_at, crypto_suite_id, intent_id, metadata, segments, seq_no, version</code></pre>
+<p><strong>COLLAPSE canonical fields (alphabetical):</strong></p>
+<pre><code>created_at, crypto_suite_id, fees, finality_proof, intent_id, metadata,
+net_energy_confidence, net_energy_j, version, window_id</code></pre>
+<h3 id="hash-computation">5.4 Hash Computation</h3>
+<pre><code>object_id = BLAKE3(cbor_canonical_encode(object_without_id_and_sigset))</code></pre>
+<p>The BLAKE3 hash produces a 32-byte (256-bit) digest.</p>
+<hr />
+<h2 id="verification-rules">6. Verification Rules</h2>
+<p>All verification rules are deterministic and MUST produce identical
+results across conforming implementations.</p>
+<h3 id="signature-verification">6.1 Signature Verification</h3>
+<h4 id="signature-structure">6.1.1 Signature Structure</h4>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;signer_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hex-encoded public key&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;signature&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;hex-encoded signature&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;suite identifier&gt;&quot;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="verification-procedure">6.1.2 Verification Procedure</h4>
+<ol type="1">
+<li>Extract <code>crypto_suite_id</code> from signature object</li>
+<li>Validate that suite is in the supported registry</li>
+<li>Compute canonical form of the object (excluding
+<code>sigset</code>)</li>
+<li>Compute CBOR encoding of canonical form</li>
+<li>Verify signature over CBOR bytes using suite-specific algorithm</li>
+<li>Verify signer_pubkey is authorized for this object type</li>
+</ol>
+<h4 id="authorization-rules">6.1.3 Authorization Rules</h4>
+<table>
+<thead>
+<tr>
+<th>Object Type</th>
+<th>Authorized Signers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INTENT</td>
+<td><code>tx_node_pubkey</code> OR <code>rx_node_pubkey</code></td>
+</tr>
+<tr>
+<td>FRAME</td>
+<td>Any <code>from_pubkey</code> or <code>to_pubkey</code> in
+segments</td>
+</tr>
+<tr>
+<td>COLLAPSE</td>
+<td>Any member of <code>finality_proof.signer_set</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="timebox-validation">6.2 Timebox Validation</h3>
+<ol type="1">
+<li>Parse <code>t_start</code> and <code>t_end</code> as ISO 8601
+timestamps</li>
+<li>Verify both are valid ISO 8601 with timezone (Z or offset)</li>
+<li>Verify <code>t_start</code> &lt; <code>t_end</code></li>
+<li>For INTENT activation: current_time &gt;= <code>t_start</code> AND
+current_time &lt; <code>t_end</code></li>
+<li>Verify timebox duration does not exceed implementation limits</li>
+</ol>
+<h3 id="window-membership">6.3 Window Membership</h3>
+<p>A FRAME belongs to window W if and only if:</p>
+<ol type="1">
+<li><code>frame.created_at</code> &gt;= <code>W.window_start</code></li>
+<li><code>frame.created_at</code> &lt; <code>W.window_end</code></li>
+<li>For all segments S in frame:
+<ul>
+<li><code>S.segment_timebox.t_start</code> &gt;=
+<code>W.window_start</code></li>
+<li><code>S.segment_timebox.t_end</code> &lt;=
+<code>W.window_end</code></li>
+</ul></li>
+</ol>
+<h3 id="segment-consistency">6.4 Segment Consistency</h3>
+<p>For a FRAME to be segment-consistent:</p>
+<ol type="1">
+<li><p><strong>Ordering</strong>: <code>segment_id</code> values MUST be
+sequential starting from 0</p></li>
+<li><p><strong>Chaining</strong>: For segments i and i+1:
+<code>segments[i].to_pubkey</code> ==
+<code>segments[i+1].from_pubkey</code></p></li>
+<li><p><strong>Energy Conservation</strong>:</p>
+<pre><code>segments[i+1].energy_j_partial &lt;= segments[i].energy_j_partial - segments[i].loss_estimate.min</code></pre></li>
+<li><p><strong>Temporal Ordering</strong>:</p>
+<pre><code>segments[i].segment_timebox.t_end &lt;= segments[i+1].segment_timebox.t_start</code></pre></li>
+<li><p><strong>Modality Validity</strong>: Each segment’s modality MUST
+be in parent INTENT’s <code>modality_set</code></p></li>
+</ol>
+<h3 id="energy-conservation-checks">6.5 Energy Conservation Checks</h3>
+<h4 id="frame-level-conservation">6.5.1 Frame-Level Conservation</h4>
+<p>For each frame:</p>
+<pre><code>input_energy = segments[0].energy_j_partial
+output_energy = segments[n-1].energy_j_partial
+total_loss = Σ(loss_estimate.max for all segments)
+REQUIRE: input_energy - output_energy &lt;= total_loss</code></pre>
+<h4 id="intent-level-conservation">6.5.2 Intent-Level Conservation</h4>
+<p>Across all frames for an intent within a window:</p>
+<pre><code>total_input = Σ(first_segment.energy_j_partial for all frames)
+total_output = Σ(last_segment.energy_j_partial for all frames)
+REQUIRE: total_input &gt;= total_output
+REQUIRE: total_input &lt;= intent.max_energy_j (SHOULD, not MUST)</code></pre>
+<h3 id="finality-proof-verification">6.6 Finality Proof
+Verification</h3>
+<p>For a COLLAPSE to have valid finality:</p>
+<ol type="1">
+<li>Recompute <code>window_id</code> from <code>window_params</code>;
+MUST match</li>
+<li>Verify <code>merkle_root</code> is correctly computed from
+frame_ids</li>
+<li>Verify threshold number of signatures in
+<code>finality_proof.signatures</code></li>
+<li>Each signature MUST:
+<ul>
+<li>Be from a pubkey in <code>signer_set</code></li>
+<li>Verify over canonical(merkle_root || window_id || net_energy_j)</li>
+</ul></li>
+<li>No duplicate signers</li>
+</ol>
+<hr />
+<h2 id="crypto-agility">7. Crypto-Agility</h2>
+<p>OERC-S is designed for cryptographic agility, supporting algorithm
+evolution without protocol changes.</p>
+<h3 id="crypto-suite-registry">7.1 Crypto Suite Registry</h3>
+<p>Each crypto suite is identified by a string and defines algorithms
+for: - <strong>Signing</strong>: Digital signature algorithm -
+<strong>Verification</strong>: Signature verification - <strong>Key
+Exchange</strong>: (Optional) Key agreement protocol -
+<strong>Hashing</strong>: Hash function for identifiers</p>
+<h3 id="classical-suites">7.2 Classical Suites</h3>
+<h4 id="ed25519-blake3">7.2.1 ED25519-BLAKE3</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Algorithm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Signing</td>
+<td>Ed25519 (RFC 8032)</td>
+</tr>
+<tr>
+<td>Verification</td>
+<td>Ed25519</td>
+</tr>
+<tr>
+<td>Key Exchange</td>
+<td>X25519 (RFC 7748)</td>
+</tr>
+<tr>
+<td>Hashing</td>
+<td>BLAKE3</td>
+</tr>
+<tr>
+<td>Public Key Size</td>
+<td>32 bytes</td>
+</tr>
+<tr>
+<td>Signature Size</td>
+<td>64 bytes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Suite ID</strong>: <code>"ED25519-BLAKE3"</code></p>
+<h4 id="ed25519-sha256">7.2.2 ED25519-SHA256</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Algorithm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Signing</td>
+<td>Ed25519 (RFC 8032)</td>
+</tr>
+<tr>
+<td>Verification</td>
+<td>Ed25519</td>
+</tr>
+<tr>
+<td>Key Exchange</td>
+<td>X25519 (RFC 7748)</td>
+</tr>
+<tr>
+<td>Hashing</td>
+<td>SHA-256</td>
+</tr>
+<tr>
+<td>Public Key Size</td>
+<td>32 bytes</td>
+</tr>
+<tr>
+<td>Signature Size</td>
+<td>64 bytes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Suite ID</strong>: <code>"ED25519-SHA256"</code></p>
+<h3 id="post-quantum-suites">7.3 Post-Quantum Suites</h3>
+<h4 id="ml-dsa-65-blake3">7.3.1 ML-DSA-65-BLAKE3</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Algorithm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Signing</td>
+<td>ML-DSA-65 (FIPS 204)</td>
+</tr>
+<tr>
+<td>Verification</td>
+<td>ML-DSA-65</td>
+</tr>
+<tr>
+<td>Key Exchange</td>
+<td>ML-KEM-768 (FIPS 203)</td>
+</tr>
+<tr>
+<td>Hashing</td>
+<td>BLAKE3</td>
+</tr>
+<tr>
+<td>Public Key Size</td>
+<td>1952 bytes</td>
+</tr>
+<tr>
+<td>Signature Size</td>
+<td>3293 bytes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Suite ID</strong>: <code>"ML-DSA-65-BLAKE3"</code></p>
+<h4 id="ml-dsa-87-blake3">7.3.2 ML-DSA-87-BLAKE3</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Algorithm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Signing</td>
+<td>ML-DSA-87 (FIPS 204)</td>
+</tr>
+<tr>
+<td>Verification</td>
+<td>ML-DSA-87</td>
+</tr>
+<tr>
+<td>Key Exchange</td>
+<td>ML-KEM-1024 (FIPS 203)</td>
+</tr>
+<tr>
+<td>Hashing</td>
+<td>BLAKE3</td>
+</tr>
+<tr>
+<td>Public Key Size</td>
+<td>2592 bytes</td>
+</tr>
+<tr>
+<td>Signature Size</td>
+<td>4595 bytes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Suite ID</strong>: <code>"ML-DSA-87-BLAKE3"</code></p>
+<h3 id="hybrid-suites">7.4 Hybrid Suites</h3>
+<p>Hybrid suites combine classical and post-quantum algorithms for
+defense-in-depth.</p>
+<h4 id="ed25519-ml-dsa-65-blake3">7.4.1 ED25519-ML-DSA-65-BLAKE3</h4>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Algorithm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Signing</td>
+<td>Ed25519 + ML-DSA-65 (concatenated)</td>
+</tr>
+<tr>
+<td>Verification</td>
+<td>Both must verify</td>
+</tr>
+<tr>
+<td>Key Exchange</td>
+<td>X25519 + ML-KEM-768</td>
+</tr>
+<tr>
+<td>Hashing</td>
+<td>BLAKE3</td>
+</tr>
+<tr>
+<td>Public Key Size</td>
+<td>32 + 1952 = 1984 bytes</td>
+</tr>
+<tr>
+<td>Signature Size</td>
+<td>64 + 3293 = 3357 bytes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Suite ID</strong>:
+<code>"ED25519-ML-DSA-65-BLAKE3"</code></p>
+<p><strong>Hybrid Signature Format</strong>:</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;classical&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;64 bytes Ed25519 signature, hex&gt;&quot;</span><span class="fu">,</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;pqc&quot;</span><span class="fu">:</span> <span class="st">&quot;&lt;3293 bytes ML-DSA-65 signature, hex&gt;&quot;</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="x25519-ml-kem-768-blake3">7.4.2 X25519-ML-KEM-768-BLAKE3</h4>
+<p>For key exchange only (used in encrypted transport, not object
+signing):</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Algorithm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Key Exchange</td>
+<td>X25519 + ML-KEM-768</td>
+</tr>
+<tr>
+<td>Hashing</td>
+<td>BLAKE3</td>
+</tr>
+<tr>
+<td>Shared Secret</td>
+<td>BLAKE3(X25519_shared</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Suite ID</strong>:
+<code>"X25519-ML-KEM-768-BLAKE3"</code></p>
+<h3 id="suite-negotiation">7.5 Suite Negotiation</h3>
+<ol type="1">
+<li>Objects MUST include <code>crypto_suite_id</code> field</li>
+<li>Nodes SHOULD support multiple suites for interoperability</li>
+<li>Nodes MUST support at least one classical suite
+(ED25519-BLAKE3)</li>
+<li>Nodes operating in high-security contexts SHOULD support at least
+one hybrid suite</li>
+<li>Suite deprecation follows a 2-year sunset period with 6-month
+warning</li>
+</ol>
+<h3 id="suite-migration">7.6 Suite Migration</h3>
+<p>When migrating from suite A to suite B:</p>
+<ol type="1">
+<li>During transition period, sign with both suites (dual sigset
+entries)</li>
+<li>Verifiers accept either signature</li>
+<li>After transition period, suite A signatures rejected</li>
+<li>Old objects with suite A signatures remain valid (no retroactive
+invalidation)</li>
+</ol>
+<hr />
+<h2 id="conformance-requirements">8. Conformance Requirements</h2>
+<h3 id="conformance-levels">8.1 Conformance Levels</h3>
+<h4 id="oerc-s-minimal">8.1.1 OERC-S Minimal</h4>
+<p>A <strong>Minimal</strong> implementation MUST: - Parse and validate
+INTENT, FRAME, and COLLAPSE objects - Compute object identifiers
+(intent_id, frame_id, collapse_id) - Verify signatures for at least
+ED25519-BLAKE3 suite - Implement canonical encoding (CBOR) - Pass all
+Minimal test vectors</p>
+<h4 id="oerc-s-standard">8.1.2 OERC-S Standard</h4>
+<p>A <strong>Standard</strong> implementation MUST: - Meet all Minimal
+requirements - Implement clearing window logic - Support SIMPLE_SUM_V1
+netting algorithm - Generate valid COLLAPSE objects - Support at least
+two crypto suites - Pass all Standard test vectors</p>
+<h4 id="oerc-s-full">8.1.3 OERC-S Full</h4>
+<p>A <strong>Full</strong> implementation MUST: - Meet all Standard
+requirements - Support all registered crypto suites including hybrids -
+Implement all registered netting algorithms - Support configurable
+window parameters - Pass all Full test vectors</p>
+<h3 id="test-vectors">8.2 Test Vectors</h3>
+<p>Conformance is verified through official test vectors. Test vectors
+are provided in JSON format and cover:</p>
+<ol type="1">
+<li><strong>Encoding Vectors</strong>: Canonical form computation</li>
+<li><strong>Hash Vectors</strong>: Object ID computation</li>
+<li><strong>Signature Vectors</strong>: Sign and verify operations per
+suite</li>
+<li><strong>Validation Vectors</strong>: Valid and invalid object
+examples</li>
+<li><strong>Netting Vectors</strong>: Frame-to-collapse computation</li>
+<li><strong>Window Vectors</strong>: Window membership and
+lifecycle</li>
+</ol>
+<h3 id="conformance-assertion">8.3 Conformance Assertion</h3>
+<p>An implementation MAY assert “OERC-S Compliant” if and only if:</p>
+<ol type="1">
+<li>It passes 100% of required test vectors for its conformance
+level</li>
+<li>It does not extend the protocol in incompatible ways</li>
+<li>It publishes its conformance level and test results</li>
+</ol>
+<h3 id="non-conformance-consequences">8.4 Non-Conformance
+Consequences</h3>
+<p><strong>No conformance =&gt; No liquidity.</strong></p>
+<p>Non-conforming implementations: - MUST NOT assert OERC-S compliance -
+SHOULD NOT expect interoperability with conforming implementations - MAY
+be excluded from settlement networks - MAY have their COLLAPSE objects
+rejected by clearinghouses</p>
+<h3 id="interoperability-requirements">8.5 Interoperability
+Requirements</h3>
+<p>Conforming implementations MUST: - Accept valid objects from any
+conforming implementation - Produce objects that any conforming
+implementation can validate - Not require proprietary extensions for
+basic operation - Document any optional extensions clearly</p>
+<hr />
+<h2 id="security-considerations">9. Security Considerations</h2>
+<h3 id="threat-model">9.1 Threat Model</h3>
+<p>OERC-S assumes the following threat model:</p>
+<ol type="1">
+<li><strong>Network Adversary</strong>: Attackers can observe, delay,
+replay, and modify messages</li>
+<li><strong>Compromised Nodes</strong>: Some nodes may be malicious or
+compromised</li>
+<li><strong>Quantum Adversary</strong> (future): Adversaries with
+quantum computers capable of breaking classical cryptography</li>
+</ol>
+<h3 id="cryptographic-security">9.2 Cryptographic Security</h3>
+<h4 id="hash-function-security">9.2.1 Hash Function Security</h4>
+<p>BLAKE3 provides: - 256-bit pre-image resistance - 256-bit second
+pre-image resistance - 128-bit collision resistance</p>
+<p>Implementations MUST NOT truncate hash outputs.</p>
+<h4 id="signature-security">9.2.2 Signature Security</h4>
+<p>All signature schemes provide existential unforgeability under chosen
+message attack (EUF-CMA): - Ed25519: ~128-bit classical security -
+ML-DSA-65: NIST Level 3 security (~143-bit classical, ~128-bit quantum)
+- Hybrid: Security of stronger algorithm</p>
+<h4 id="key-management">9.2.3 Key Management</h4>
+<p>Implementations MUST: - Generate keys using cryptographically secure
+random number generators - Protect private keys with appropriate access
+controls - Support key rotation without protocol changes - Maintain
+key-to-identity binding through external PKI</p>
+<h3 id="replay-protection">9.3 Replay Protection</h3>
+<h4 id="object-level-replay">9.3.1 Object-Level Replay</h4>
+<p>Object identifiers (intent_id, frame_id, collapse_id) provide natural
+replay protection: - Identical objects have identical IDs -
+Implementations MUST reject duplicate IDs within scope</p>
+<h4 id="intent-replay">9.3.2 Intent Replay</h4>
+<p>INTENTs include timeboxes that limit validity windows.
+Implementations MUST: - Reject INTENTs with <code>t_end</code> in the
+past - Track active intent_ids to prevent reactivation</p>
+<h4 id="frame-replay">9.3.3 Frame Replay</h4>
+<p>Frames include sequence numbers. Implementations MUST: - Reject
+frames with seq_no &lt;= highest seen for that intent - Reject frames
+for expired or inactive intents</p>
+<h3 id="denial-of-service">9.4 Denial of Service</h3>
+<h4 id="resource-exhaustion">9.4.1 Resource Exhaustion</h4>
+<p>Implementations SHOULD: - Limit maximum object sizes - Rate-limit
+object acceptance per source - Validate signatures before expensive
+operations - Implement backpressure mechanisms</p>
+<h4 id="computational-dos">9.4.2 Computational DoS</h4>
+<p>Signature verification is computationally expensive. Implementations
+SHOULD: - Cache verification results - Prioritize objects from known
+nodes - Implement proof-of-work or stake-based prioritization</p>
+<h3 id="privacy-considerations">9.5 Privacy Considerations</h3>
+<h4 id="data-exposure">9.5.1 Data Exposure</h4>
+<p>OERC-S objects contain: - Public keys (node identifiers) - Energy
+quantities - Timing information - Location tags</p>
+<p>This data may reveal: - Energy trading patterns - Orbital positions -
+Business relationships</p>
+<h4 id="privacy-mitigations">9.5.2 Privacy Mitigations</h4>
+<p>Implementations MAY: - Use ephemeral keys for unlinkability -
+Aggregate frames before broadcast - Encrypt objects at transport layer -
+Use private clearinghouses</p>
+<h3 id="quantum-resistance">9.6 Quantum Resistance</h3>
+<h4 id="timeline">9.6.1 Timeline</h4>
+<p>Current estimates suggest cryptographically relevant quantum
+computers by 2035-2040. OERC-S provides: - Hybrid suites for immediate
+deployment - Pure PQC suites for future migration - Crypto-agility for
+algorithm updates</p>
+<h4 id="migration-strategy">9.6.2 Migration Strategy</h4>
+<ol type="1">
+<li><strong>Now</strong>: Deploy hybrid suites (ED25519-ML-DSA-65)</li>
+<li><strong>2030</strong>: Mandate hybrid suites for new nodes</li>
+<li><strong>2035</strong>: Deprecate pure classical suites</li>
+<li><strong>2040</strong>: Evaluate pure PQC-only deployment</li>
+</ol>
+<hr />
+<h2 id="iana-considerations">10. IANA Considerations</h2>
+<p>This section is a placeholder for future IANA registrations.</p>
+<h3 id="media-types">10.1 Media Types</h3>
+<p>The following media types are requested for registration:</p>
+<table>
+<thead>
+<tr>
+<th>Media Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>application/oerc-s+json</code></td>
+<td>OERC-S object in JSON format</td>
+</tr>
+<tr>
+<td><code>application/oerc-s+cbor</code></td>
+<td>OERC-S object in CBOR format</td>
+</tr>
+</tbody>
+</table>
+<h3 id="uri-schemes">10.2 URI Schemes</h3>
+<p>The following URI scheme is requested:</p>
+<table>
+<thead>
+<tr>
+<th>Scheme</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>oerc-s:</code></td>
+<td>OERC-S object identifier</td>
+</tr>
+</tbody>
+</table>
+<p>Format:
+<code>oerc-s:&lt;object_type&gt;/&lt;object_id_hex&gt;</code></p>
+<p>Examples: -
+<code>oerc-s:intent/c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4</code>
+-
+<code>oerc-s:frame/1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef</code>
+-
+<code>oerc-s:collapse/abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789</code></p>
+<h3 id="crypto-suite-registry-1">10.3 Crypto Suite Registry</h3>
+<p>A registry of OERC-S crypto suites should be established with the
+following initial entries:</p>
+<table>
+<thead>
+<tr>
+<th>Suite ID</th>
+<th>Status</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ED25519-BLAKE3</td>
+<td>Active</td>
+<td>This document</td>
+</tr>
+<tr>
+<td>ED25519-SHA256</td>
+<td>Active</td>
+<td>This document</td>
+</tr>
+<tr>
+<td>ML-DSA-65-BLAKE3</td>
+<td>Active</td>
+<td>This document</td>
+</tr>
+<tr>
+<td>ML-DSA-87-BLAKE3</td>
+<td>Active</td>
+<td>This document</td>
+</tr>
+<tr>
+<td>ED25519-ML-DSA-65-BLAKE3</td>
+<td>Active</td>
+<td>This document</td>
+</tr>
+</tbody>
+</table>
+<h3 id="netting-algorithm-registry">10.4 Netting Algorithm Registry</h3>
+<p>A registry of OERC-S netting algorithms should be established:</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm ID</th>
+<th>Status</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SIMPLE_SUM_V1</td>
+<td>Active</td>
+<td>This document</td>
+</tr>
+<tr>
+<td>WEIGHTED_CONFIDENCE_V1</td>
+<td>Active</td>
+<td>This document</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="appendix-a-test-vectors">Appendix A: Test Vectors</h2>
+<h3 id="a.1-canonical-encoding-vector">A.1 Canonical Encoding
+Vector</h3>
+<p><strong>Input INTENT (JSON, non-canonical):</strong></p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;version&quot;</span><span class="fu">:</span> <span class="st">&quot;OERC-S/0.1&quot;</span><span class="fu">,</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;tx_node_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20&quot;</span><span class="fu">,</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;rx_node_pubkey&quot;</span><span class="fu">:</span> <span class="st">&quot;2120191817161514131211100f0e0d0c0b0a09080706050403020100fffefdfb&quot;</span><span class="fu">,</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;timebox&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;t_start&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-01-01T00:00:00Z&quot;</span><span class="fu">,</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;t_end&quot;</span><span class="fu">:</span> <span class="st">&quot;2025-01-01T01:00:00Z&quot;</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;max_energy_j&quot;</span><span class="fu">:</span> <span class="dv">1000000000</span><span class="fu">,</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;modality_set&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;laser&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;location_tag&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;orbit_regime&quot;</span><span class="fu">:</span> <span class="st">&quot;LEO&quot;</span><span class="fu">,</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;ephemeris_hash&quot;</span><span class="fu">:</span> <span class="st">&quot;0000000000000000000000000000000000000000000000000000000000000000&quot;</span><span class="fu">,</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;footprint_id&quot;</span><span class="fu">:</span> <span class="st">&quot;TEST-001&quot;</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="st">&quot;ED25519-BLAKE3&quot;</span><span class="fu">,</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;sigset&quot;</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2024-12-31T23:59:00Z&quot;</span><span class="fu">,</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;metadata&quot;</span><span class="fu">:</span> <span class="kw">null</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<p><strong>Canonical CBOR (hex):</strong></p>
+<pre><code>a96a637265617465645f617474323032342d31322d33315432333a35393a30305a
+6f63727970746f5f73756974655f6964...</code></pre>
+<p>(Full vector available in official test suite)</p>
+<p><strong>Computed intent_id:</strong></p>
+<pre><code>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</code></pre>
+<p>(Example only - compute from actual canonical encoding)</p>
+<h3 id="a.2-signature-vector">A.2 Signature Vector</h3>
+<p><strong>Message (canonical CBOR, hex):</strong></p>
+<pre><code>a96a637265617465645f6174...</code></pre>
+<p><strong>Private Key (Ed25519, hex):</strong></p>
+<pre><code>9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60</code></pre>
+<p><strong>Public Key (Ed25519, hex):</strong></p>
+<pre><code>d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a</code></pre>
+<p><strong>Signature (hex):</strong></p>
+<pre><code>e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b</code></pre>
+<hr />
+<h2 id="appendix-b-json-schema">Appendix B: JSON Schema</h2>
+<h3 id="b.1-intent-schema">B.1 INTENT Schema</h3>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;$schema&quot;</span><span class="fu">:</span> <span class="st">&quot;https://json-schema.org/draft/2020-12/schema&quot;</span><span class="fu">,</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;$id&quot;</span><span class="fu">:</span> <span class="st">&quot;https://oerc-s.org/schema/v0.1/intent.json&quot;</span><span class="fu">,</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;title&quot;</span><span class="fu">:</span> <span class="st">&quot;OERC-S Intent&quot;</span><span class="fu">,</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;object&quot;</span><span class="fu">,</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;required&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;version&quot;</span><span class="ot">,</span> <span class="st">&quot;tx_node_pubkey&quot;</span><span class="ot">,</span> <span class="st">&quot;rx_node_pubkey&quot;</span><span class="ot">,</span> <span class="st">&quot;timebox&quot;</span><span class="ot">,</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;max_energy_j&quot;</span><span class="ot">,</span> <span class="st">&quot;modality_set&quot;</span><span class="ot">,</span> <span class="st">&quot;location_tag&quot;</span><span class="ot">,</span> <span class="st">&quot;crypto_suite_id&quot;</span><span class="ot">,</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;sigset&quot;</span><span class="ot">,</span> <span class="st">&quot;created_at&quot;</span><span class="ot">,</span> <span class="st">&quot;metadata&quot;</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;properties&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;version&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;const&quot;</span><span class="fu">:</span> <span class="st">&quot;OERC-S/0.1&quot;</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;tx_node_pubkey&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;pattern&quot;</span><span class="fu">:</span> <span class="st">&quot;^[0-9a-f]{64}$&quot;</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;rx_node_pubkey&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;pattern&quot;</span><span class="fu">:</span> <span class="st">&quot;^[0-9a-f]{64}$&quot;</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;timebox&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;object&quot;</span><span class="fu">,</span></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;required&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;t_start&quot;</span><span class="ot">,</span> <span class="st">&quot;t_end&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;properties&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;t_start&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span> <span class="dt">&quot;format&quot;</span><span class="fu">:</span> <span class="st">&quot;date-time&quot;</span><span class="fu">},</span></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;t_end&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span> <span class="dt">&quot;format&quot;</span><span class="fu">:</span> <span class="st">&quot;date-time&quot;</span><span class="fu">}</span></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;max_energy_j&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;integer&quot;</span><span class="fu">,</span></span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;minimum&quot;</span><span class="fu">:</span> <span class="dv">1</span></span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;modality_set&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;array&quot;</span><span class="fu">,</span></span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;items&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span></span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;enum&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;laser&quot;</span><span class="ot">,</span> <span class="st">&quot;microwave&quot;</span><span class="ot">,</span> <span class="st">&quot;storage&quot;</span><span class="ot">,</span> <span class="st">&quot;relay&quot;</span><span class="ot">]</span></span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;minItems&quot;</span><span class="fu">:</span> <span class="dv">1</span></span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;location_tag&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;object&quot;</span><span class="fu">,</span></span>
+<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;required&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;orbit_regime&quot;</span><span class="ot">,</span> <span class="st">&quot;ephemeris_hash&quot;</span><span class="ot">,</span> <span class="st">&quot;footprint_id&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;properties&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;orbit_regime&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">},</span></span>
+<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;ephemeris_hash&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span> <span class="dt">&quot;pattern&quot;</span><span class="fu">:</span> <span class="st">&quot;^[0-9a-f]{64}$&quot;</span><span class="fu">},</span></span>
+<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;footprint_id&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;string&quot;</span><span class="ot">,</span> <span class="st">&quot;null&quot;</span><span class="ot">]</span><span class="fu">}</span></span>
+<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">},</span></span>
+<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;sigset&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;array&quot;</span><span class="fu">,</span></span>
+<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;items&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;$ref&quot;</span><span class="fu">:</span> <span class="st">&quot;#/$defs/signature&quot;</span><span class="fu">}</span></span>
+<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">},</span></span>
+<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">,</span> <span class="dt">&quot;format&quot;</span><span class="fu">:</span> <span class="st">&quot;date-time&quot;</span><span class="fu">},</span></span>
+<span id="cb25-59"><a href="#cb25-59" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;metadata&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;object&quot;</span><span class="ot">,</span> <span class="st">&quot;null&quot;</span><span class="ot">]</span><span class="fu">}</span></span>
+<span id="cb25-60"><a href="#cb25-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">},</span></span>
+<span id="cb25-61"><a href="#cb25-61" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;$defs&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-62"><a href="#cb25-62" aria-hidden="true" tabindex="-1"></a>    <span class="dt">&quot;signature&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-63"><a href="#cb25-63" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;object&quot;</span><span class="fu">,</span></span>
+<span id="cb25-64"><a href="#cb25-64" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;required&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;signer_pubkey&quot;</span><span class="ot">,</span> <span class="st">&quot;signature&quot;</span><span class="ot">,</span> <span class="st">&quot;crypto_suite_id&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb25-65"><a href="#cb25-65" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;properties&quot;</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb25-66"><a href="#cb25-66" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;signer_pubkey&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">},</span></span>
+<span id="cb25-67"><a href="#cb25-67" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;signature&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">},</span></span>
+<span id="cb25-68"><a href="#cb25-68" aria-hidden="true" tabindex="-1"></a>        <span class="dt">&quot;crypto_suite_id&quot;</span><span class="fu">:</span> <span class="fu">{</span><span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span><span class="fu">}</span></span>
+<span id="cb25-69"><a href="#cb25-69" aria-hidden="true" tabindex="-1"></a>      <span class="fu">}</span></span>
+<span id="cb25-70"><a href="#cb25-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">}</span></span>
+<span id="cb25-72"><a href="#cb25-72" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<hr />
+<h2 id="references">References</h2>
+<h3 id="normative-references">Normative References</h3>
+<ul>
+<li><strong>RFC 2119</strong>: Key words for use in RFCs to Indicate
+Requirement Levels</li>
+<li><strong>RFC 8032</strong>: Edwards-Curve Digital Signature Algorithm
+(EdDSA)</li>
+<li><strong>RFC 7748</strong>: Elliptic Curves for Security
+(X25519)</li>
+<li><strong>RFC 8949</strong>: Concise Binary Object Representation
+(CBOR)</li>
+<li><strong>RFC 3339</strong>: Date and Time on the Internet:
+Timestamps</li>
+<li><strong>FIPS 203</strong>: Module-Lattice-Based Key-Encapsulation
+Mechanism (ML-KEM)</li>
+<li><strong>FIPS 204</strong>: Module-Lattice-Based Digital Signature
+Algorithm (ML-DSA)</li>
+<li><strong>BLAKE3</strong>: BLAKE3 Cryptographic Hash Function
+Specification</li>
+</ul>
+<h3 id="informative-references">Informative References</h3>
+<ul>
+<li><strong>RFC 8610</strong>: Concise Data Definition Language
+(CDDL)</li>
+<li><strong>ISO 8601</strong>: Date and time format</li>
+<li><strong>NIST SP 800-208</strong>: Recommendation for Stateful
+Hash-Based Signature Schemes</li>
+</ul>
+<hr />
+<h2 id="document-history">Document History</h2>
+<table>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.1</td>
+<td>2025-12-27</td>
+<td>Initial draft specification</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>End of OERC-S v0.1 Specification</em></p>
+</body>
+</html>

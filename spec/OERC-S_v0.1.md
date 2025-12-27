@@ -1,9 +1,11 @@
 # OERC-S v0.1: Orbital Energy Routing & Clearing Standard
 
+*OERC-S defines the payable energy receipt for machine-to-machine settlement: the COLLAPSE.*
+
 **Version:** 0.1
 **Status:** Draft
 **Date:** 2025-12-27
-**Authors:** SPEC_ARCHITECT (Agent A)
+**Author:** Adelio Sebti
 **License:** CC-BY-4.0
 
 ---
@@ -33,14 +35,36 @@
 
 OERC-S (Orbital Energy Routing & Clearing Standard) defines a minimal, object-first protocol for routing, proving, and settling energy transfers in space-based power infrastructure. The protocol operates on a fundamental axiom: **COLLAPSE is payable, everything else is not.** INTENTs represent pre-allocation reservations that carry no settlement obligation; FRAMEs represent superposed streaming proofs that remain probabilistic until finalization; only COLLAPSE objects—emitted at clearing window boundaries—constitute binding, payable settlement records. This design ensures that streaming telemetry and routing negotiations impose zero settlement risk while maintaining cryptographic auditability, enables efficient netting across multi-hop relay topologies, and provides a clear demarcation between operational signaling and financial obligation. OERC-S is transport-agnostic, crypto-agile, and designed for deterministic verification across heterogeneous node implementations.
 
+
 ---
 
-## 1.1 Purpose (What this is for)
+### Quick Summary
 
-- **Problem**: Multi-actor energy flows (SBSP, power-beaming networks, relays, orbital compute) require a canonical, payable settlement artifact that all parties can verify independently.
-- **Solution**: Only COLLAPSE is payable, settleable, and composable. INTENTs and FRAMEs are operational signaling with zero settlement risk.
-- **Applies to**: Space-based solar power (SBSP), power-beaming networks, orbital relays, orbital compute, ground-to-orbit and orbit-to-ground energy transfers.
-- **Non-goal**: OERC-S does not route or transmit energy; it settles energy receipts. Routing is out of scope; OERC-S standardizes receipts/finality over any route.
+| | |
+|---|---|
+| **Problem** | Multi-actor energy systems have no common payable artifact for machine-to-machine settlement |
+| **Solution** | Three objects: INTENT → FRAME → COLLAPSE. **Only COLLAPSE is payable** |
+| **Action** | Publish ONE real Collapse hash from your test environment |
+| **Not in scope** | Routing, transmission, hardware — OERC-S settles receipts only |
+
+```
+INTENT (non-payable) → FRAME* (non-payable) → COLLAPSE (payable)
+```
+
+---
+
+## 1.1 Partner Action (Minimal)
+
+To demonstrate conformance, publish these fields from ONE real Collapse:
+
+| Field | Description |
+|-------|-------------|
+| `collapse_id` | BLAKE3 hash identifying the collapse |
+| `window_id` | Clearing window identifier |
+| `net_energy_j` | Net energy transferred (joules) |
+| `merkle_root` | Merkle root of frames in window |
+
+This enables third-party verification without revealing proprietary telemetry.
 
 ---
 

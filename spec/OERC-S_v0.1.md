@@ -35,6 +35,15 @@ OERC-S (Orbital Energy Routing & Clearing Standard) defines a minimal, object-fi
 
 ---
 
+## 1.1 Purpose (What this is for)
+
+- **Problem**: Multi-actor energy flows (SBSP, power-beaming networks, relays, orbital compute) require a canonical, payable settlement artifact that all parties can verify independently.
+- **Solution**: Only COLLAPSE is payable, settleable, and composable. INTENTs and FRAMEs are operational signaling with zero settlement risk.
+- **Applies to**: Space-based solar power (SBSP), power-beaming networks, orbital relays, orbital compute, ground-to-orbit and orbit-to-ground energy transfers.
+- **Non-goal**: OERC-S does not route or transmit energy; it settles energy receipts. Routing is out of scope; OERC-S standardizes receipts/finality over any route.
+
+---
+
 ## 2. Terminology
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in RFC 2119.
@@ -94,6 +103,10 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 ---
 
 ## 3. Object Definitions
+n```
+INTENT (non-payable) → FRAME* (superposed, non-payable) → COLLAPSE (payable)
+```
+
 
 OERC-S defines three primary object types, each serving a distinct role in the energy routing and clearing lifecycle. Objects are immutable once created; modifications require new objects with new identifiers.
 
@@ -183,6 +196,7 @@ A FRAME represents superposed streaming proofs of energy transfer. FRAMEs are em
 | `frame_id` | bytes[32] | BLAKE3 hash of canonical encoding (computed, not transmitted) |
 | `version` | string | Protocol version. MUST be "OERC-S/0.1" |
 | `intent_id` | bytes[32] | Reference to parent INTENT |
+| `window_id` | bytes[32] | REQUIRED. Reference to clearing window (binds frame to window) |
 | `seq_no` | uint64 | Sequence number within the intent, starting at 0 |
 | `segments` | array[object] | Array of segment objects |
 | `crypto_suite_id` | string | Identifier of the crypto suite used for signatures |
@@ -803,7 +817,7 @@ For key exchange only (used in encrypted transport, not object signing):
 2. Nodes SHOULD support multiple suites for interoperability
 3. Nodes MUST support at least one classical suite (ED25519-BLAKE3)
 4. Nodes operating in high-security contexts SHOULD support at least one hybrid suite
-5. Suite deprecation follows a 2-year sunset period with 6-month warning
+5. Suite deprecation follows registry-defined sunset policy
 
 ### 7.6 Suite Migration
 
@@ -987,17 +1001,17 @@ Implementations MAY:
 
 #### 9.6.1 Timeline
 
-Current estimates suggest cryptographically relevant quantum computers by 2035-2040. OERC-S provides:
+Crypto suites are registry-driven; deployments choose migration policy. OERC-S provides:
 - Hybrid suites for immediate deployment
 - Pure PQC suites for future migration
 - Crypto-agility for algorithm updates
 
 #### 9.6.2 Migration Strategy
 
-1. **Now**: Deploy hybrid suites (ED25519-ML-DSA-65)
-2. **2030**: Mandate hybrid suites for new nodes
-3. **2035**: Deprecate pure classical suites
-4. **2040**: Evaluate pure PQC-only deployment
+1. Deploy hybrid suites when post-quantum readiness is required
+2. Mandate hybrid suites per deployment policy
+3. Deprecate classical suites when quantum threat materializes
+4. Evaluate pure PQC deployment based on ecosystem readiness
 
 ---
 
@@ -1083,7 +1097,7 @@ A registry of OERC-S netting algorithms should be established:
 **Canonical CBOR (hex):**
 ```
 a96a637265617465645f617474323032342d31322d33315432333a35393a30305a
-6f63727970746f5f73756974655f6964...
+[See conformance/vectors/ for full encoding]
 ```
 (Full vector available in official test suite)
 
@@ -1091,16 +1105,16 @@ a96a637265617465645f617474323032342d31322d33315432333a35393a30305a
 ```
 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
 ```
-(Example only - compute from actual canonical encoding)
+(Computed by conformance runner from canonical encoding)
 
 ### A.2 Signature Vector
 
 **Message (canonical CBOR, hex):**
 ```
-a96a637265617465645f6174...
+[See conformance/vectors/ for full vector]
 ```
 
-**Private Key (Ed25519, hex):**
+**Test-only deterministic key material (Ed25519, hex):**
 ```
 9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60
 ```
@@ -1124,7 +1138,7 @@ e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bac
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://oerc-s.org/schema/v0.1/intent.json",
+  "$id": "urn:oerc-s:schema:v0.1:intent",
   "title": "OERC-S Intent",
   "type": "object",
   "required": [
@@ -1197,6 +1211,25 @@ e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bac
 ```
 
 ---
+
+## Appendix C: Minimal Proof to Publish (One real test)
+
+A partner organization can demonstrate OERC-S conformance by publishing the following fields from ONE real Collapse:
+
+| Field | Description |
+|-------|-------------|
+| `collapse_id` | BLAKE3 hash identifying the collapse |
+| `window_id` | Clearing window identifier |
+| `net_energy_j` | Net energy transferred (joules) |
+| `finality_proof.merkle_root` | Merkle root of frames in window |
+| `signer_set` (optional) | Public keys of finality attesters |
+
+Publishing these fields enables third parties to reference and verify the test without revealing proprietary telemetry or operational details.
+
+**CTA**: Emit ONE real Collapse hash from a test environment.
+
+---
+
 
 ## References
 

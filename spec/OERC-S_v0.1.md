@@ -10,6 +10,28 @@
 
 ---
 
+## In 30 Seconds
+
+**What:** A cryptographic receipt proving energy was delivered and settled.
+
+**Why:** When satellites beam power to ground stations, or when AGI/ASI systems trade energy autonomously, every actor needs a universal, machine-verifiable proof of payment.
+
+**How:**
+1. **INTENT** = "I want X joules" (non-payable)
+2. **FRAME** = "Energy transfer in progress" (non-payable)
+3. **COLLAPSE** = "Done. Here's the proof." → **Only payable object**
+
+**Optimized for:**
+- Machine-to-machine settlement (AGI, ASI, autonomous systems)
+- Space-based solar power (SBSP)
+- Power-beaming networks
+- Orbital compute and relays
+- Any multi-actor energy system
+
+**Your action:** Publish ONE Collapse hash from a real test.
+
+---
+
 ## Table of Contents
 
 1. [Abstract](#1-abstract)
